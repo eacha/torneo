@@ -1,9 +1,17 @@
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from Fifa.forms import LeagueForm
 
 
 def new_league(request):
-    return HttpResponse("New League")
+    if request.POST:
+        form = LeagueForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = LeagueForm()
+    return render(request, 'fifa/league_form.html', {'form': form})
 
 
 def new_player(request, league_id):

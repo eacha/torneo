@@ -1,0 +1,7 @@
+<h1>Torneo</h1>
+<hr/>
+<form id="" method="POST" action="{% url 'new_league' %}" >
+{% csrf_token %}
+{{ form }}
+<button type="submit">Enviar</button>
+</form>

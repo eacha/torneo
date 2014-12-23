@@ -1,3 +1,6 @@
 from django.contrib import admin
+from Fifa.models import League, Player, Match
 
-# Register your models here.
+admin.site.register(League)
+admin.site.register(Player)
+admin.site.register(Match)
