@@ -1,0 +1,7 @@
+<h1>Jugador</h1>
+<hr/>
+<form id="" method="POST" action="{% url 'new_player' league.id %}" >
+{% csrf_token %}
+{{ form }}
+<button type="submit">Enviar</button>
+</form>
