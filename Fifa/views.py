@@ -33,3 +33,9 @@ def new_player(request, league_id):
 
 def generate_match(request, league_id):
     return HttpResponse("Generate Match")
+
+
+def index(request):
+    #return HttpResponse("index")
+    leagues = League.objects.all()
+    return render(request, 'fifa/index.html', {'leagues': leagues})
