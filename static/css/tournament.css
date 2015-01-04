@@ -1,0 +1,16 @@
+/*  Some css modification */
+body { 
+	padding-top: 70px; 
+}
+
+.jumbotron {
+	background-image: url("../img/jumbotron_bg_blur_crop.png");
+	background-size: cover;
+}
+
+.jumbotron h1,
+.jumbotron .h1,
+.jumbotron p,
+.jumbotron .p {
+  color: #eee;
+}
