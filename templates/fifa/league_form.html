@@ -1,7 +1,22 @@
-<h1>Torneo</h1>
-<hr/>
-<form id="" method="POST" action="{% url 'new_league' %}" >
-{% csrf_token %}
-{{ form }}
-<button type="submit">Enviar</button>
-</form>
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %}Torneos DCC{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+
+            <form method="POST" action="{% url 'new_league' %}" >
+                {% csrf_token %}
+                <legend>Nuevo Torneo</legend>
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button class="btn btn-default" type="submit">Enviar</button>
+                {% endbuttons %}
+            </form>
+
+        </div>
+        <div class="col-md-2"></div>
+
+    </div>
+{% endblock %}
