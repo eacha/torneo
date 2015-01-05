@@ -1,4 +1,4 @@
-from Fixture import FixArray
+from FixArray import FixArray
 
 
 class Fixture:
