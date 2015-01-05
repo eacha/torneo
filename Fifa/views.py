@@ -16,7 +16,6 @@ def new_league(request):
 
 
 def new_player(request, league_id):
-    #return HttpResponse("New Player")
     league = get_object_or_404(League, id=league_id)
     if request.POST:
         form = PlayerForm(request.POST)
@@ -30,12 +29,15 @@ def new_player(request, league_id):
         form = PlayerForm()
     return render(request, 'fifa/player_form.html', {'form': form, 'league': league})
 
-
 def generate_match(request, league_id):
     return HttpResponse("Generate Match")
 
 
 def index(request):
-    #return HttpResponse("index")
     leagues = League.objects.all()
     return render(request, 'fifa/index.html', {'leagues': leagues})
+
+def admin_league(request, league_id):
+    league = get_object_or_404(League, id=league_id)
+    players = Player.objects.filter(league=league)
+    return render(request,'fifa/league_admin.html', {'league': league, 'players': players})

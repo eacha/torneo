@@ -25,9 +25,9 @@
             <ul class="nav nav-pills nav-stacked">
                 {% for league in leagues %}
                     {% if forloop.first %}
-                        <li class="active" role="presentation"><a href="{% url 'new_player' league.id %}">{{ league.name }}</a></li>
+                        <li class="active" role="presentation"><a href="{% url 'admin_league' league.id %}">{{ league.name }}</a></li>
                     {% else %}
-                        <li role="presentation"><a href="{% url 'new_player' league.id %}">{{ league.name }}</a></li>
+                        <li role="presentation"><a href="{% url 'admin_league' league.id %}">{{ league.name }}</a></li>
                     {% endif %}
                 {% endfor %}
 {#                <li role="presentation" class="active"><a href="#">Torneo 1</a></li>#}
