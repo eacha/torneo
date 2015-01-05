@@ -23,15 +23,22 @@
 
         <div class="col-md-4">
             <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" class="active"><a href="#">Torneo 1</a></li>
-                <li role="presentation"><a href="#">Torneo 2</a></li>
-                <li role="presentation"><a href="#">Torneo 3</a></li>
+                {% for league in leagues %}
+                    {% if forloop.first %}
+                        <li class="active" role="presentation"><a href="{% url 'new_player' league.id %}">{{ league.name }}</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="{% url 'new_player' league.id %}">{{ league.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
+{#                <li role="presentation" class="active"><a href="#">Torneo 1</a></li>#}
+{#                <li role="presentation"><a href="#">Torneo 2</a></li>#}
+{#                <li role="presentation"><a href="#">Torneo 3</a></li>#}
             </ul>
         </div>
 
         <div class="col-md-8">
             <h2 class="sub-header">Torneo 1</h2>
-            </hr>
+            <hr>
             <table class="table table-hover table-striped table-condensed">
                 <thead>
                     <tr>

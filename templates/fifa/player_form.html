@@ -8,7 +8,7 @@
 
             <form id="" method="POST" action="{% url 'new_player' league.id %}" >
                 {% csrf_token %}
-                <legend>Nuevo Jugador</legend>
+                <legend>Nuevo Jugador ( Torneo {{ league.name }} )</legend>
                 {% bootstrap_form form %}
                 {% buttons %}
                     <button class="btn btn-default" type="submit">Enviar</button>
