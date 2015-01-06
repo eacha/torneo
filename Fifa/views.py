@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from Fifa.forms import LeagueForm, PlayerForm
 from Fifa.models import League, Player, Match
@@ -73,3 +73,15 @@ def end_registration(request, league_id):
     league.registration = False
     league.save()
     return HttpResponseRedirect(reverse('admin_league', args=(league.id,)))
+
+
+def set_result(request, match_id):
+    if request.POST:
+        match = get_object_or_404(Match, id=match_id)
+        local = request.POST.get("local", "")
+        visit = request.POST.get("visit", "")
+        match.local_score = local
+        match.visit_score = visit
+        match.save()
+        return HttpResponseRedirect(reverse('admin_league', args=(match.league.id,)))
+    return HttpResponse(status=404)

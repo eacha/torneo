@@ -8,11 +8,22 @@
         var button = $(event.relatedTarget);
         var local = button.data('local');
         var visit = button.data('visit');
+        var match_id = button.data('match')
         var modal = $(this);
         modal.find('#local-addon').text(local);
         modal.find('#visit-addon').text(visit);
-    });
-    });
+        modal.find('#result-form').attr('action', '/fifa/match/result/' + match_id + '/');
+    });});
+
+    /*$(function () { $('#submit').click(function (){
+        var url = $('#result-form').attr('action');
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: $('#result-form').serialize()
+        });
+        return false;
+    });});*/
     </script>
 {% endblock %}
 
@@ -32,6 +43,8 @@
         </div>
 
         <div class="col-md-10">
+
+            <!-- Jugadores -->
             <div id="Jugadores" class="row">
                 <h3>Jugadores</h3>
                 <hr/>
@@ -58,6 +71,8 @@
                 <a class="btn btn-default" href="{% url 'new_player' league.id %}">Agregar Jugador</a>
                 {% endif %}
             </div>
+
+            <!-- Partidos -->
             <div id="Partidos" class="row">
                 <h3>Partidos</h3>
                 <hr/>
@@ -77,10 +92,14 @@
                                     <td>{{ match.week }}</td>
                                     <td>{{ match.local }}</td>
                                     {% ifequal match.local_score -1 %}
-                                        <td><a data-toggle="modal" data-target="#matchModal" data-local="{{ match.local }}" data-visit="{{ match.visit }}">Enviar Resultado</a></td>
+                                        <td><a data-toggle="modal"
+                                               data-target="#matchModal"
+                                               data-local="{{ match.local }}"
+                                               data-visit="{{ match.visit }}"
+                                               data-match="{{ match.id }}">Enviar Resultado</a></td>
 
                                     {% else %}
-                                        <td>{{ match.local_score }} - {{ match.visit.score }}</td>
+                                        <td>{{ match.local_score }} - {{ match.visit_score }}</td>
                                     {% endifequal %}
                                     <td>{{ match.visit }}</td>
                                 </tr>
@@ -97,6 +116,8 @@
                     <li><a href="#">5</a></li>
                 </ul>
             </div>
+
+            <!-- Administrar -->
             <div id="Administrar" class="row">
                 <h3>Administrar</h3>
                 <hr/>
@@ -111,7 +132,7 @@
                 </div>
             </div>
 
-
+            <!-- Modal -->
             <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -120,27 +141,29 @@
                     <h4 class="modal-title" id="matchModalLabel">Enviar resultado</h4>
                   </div>
                   <div class="modal-body">
-                    <form>
+                    <form id="result-form" method="POST" action="{% url 'set_match_result' 1 %}">
+                      {% csrf_token %}
                       <div class="form-group">
                         <label for="local-name" class="control-label">Local:</label>
                         <div class="input-group">
                             <span class="input-group-addon" id="local-addon"></span>
-                            <input type="text" class="form-control" id="local-name">
+                            <input type="text" class="form-control" id="local-name" name="local">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="visit-name" class="control-label">Visita:</label>
                         <div class="input-group">
                             <span class="input-group-addon" id="visit-addon"></span>
-                            <input type="text" class="form-control" id="visit-name">
+                            <input type="text" class="form-control" id="visit-name" name="visit">
                         </div>
                       </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button id="submit" type="submit" class="btn btn-primary">Enviar</button>
+                       </div>
                     </form>
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Enviar</button>
-                  </div>
+
                 </div>
               </div>
             </div>

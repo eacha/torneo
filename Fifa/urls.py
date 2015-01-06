@@ -7,5 +7,6 @@ urlpatterns = patterns('',
                        url(r'^league/registration/(?P<league_id>\d+)/', views.end_registration, name='end_league_registration'),
                        url(r'^player/new/(?P<league_id>\d+)/', views.new_player, name='new_player'),
                        url(r'^match/generate/(?P<league_id>\d+)/', views.generate_match, name='generate_match'),
+                       url(r'^match/result/(?P<match_id>\d+)/', views.set_result, name='set_match_result'),
                        url(r'^$', views.index, name='index'),
 )
