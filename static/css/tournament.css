@@ -1,6 +1,7 @@
 /*  Some css modification */
 body { 
-	padding-top: 70px; 
+	padding-top: 70px;
+	padding-bottom: 45px;
 }
 
 .jumbotron {

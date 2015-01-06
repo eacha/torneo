@@ -42,7 +42,3 @@ class ble:
 
     def __str__(self):
         return str(self.name)
-
-a = ['a', 'b', 'c']
-b = Fixture(a)
-print b.generate()

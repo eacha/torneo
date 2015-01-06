@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from Fifa.forms import LeagueForm, PlayerForm
@@ -33,22 +34,24 @@ def new_player(request, league_id):
 
 def generate_match(request, league_id):
     league = get_object_or_404(League, id=league_id)
-    players = Player.objects.filter(league=league)
-    fix = Fixture(list(players))
-    fixture = fix.generate()
-    counter = 1
-    for round in fixture:
-        for match in round:
-            element = Match(league=league,
-                            local=match[0],
-                            visit=match[1],
-                            week=counter,
-                            local_score=-1,
-                            visit_score=-1)
-            element.save()
-        counter += 1
-
-    return HttpResponse("hola")
+    if not league.start:
+        players = Player.objects.filter(league=league)
+        fix = Fixture(list(players))
+        fixture = fix.generate()
+        counter = 1
+        for round in fixture:
+            for match in round:
+                element = Match(league=league,
+                                local=match[0],
+                                visit=match[1],
+                                week=counter,
+                                local_score=-1,
+                                visit_score=-1)
+                element.save()
+            counter += 1
+        league.start = True
+        league.save()
+    return HttpResponseRedirect(reverse('admin_league', args=(league.id,)))
 
 
 def index(request):
@@ -59,4 +62,14 @@ def index(request):
 def admin_league(request, league_id):
     league = get_object_or_404(League, id=league_id)
     players = Player.objects.filter(league=league)
+    if league.start:
+        matches = Match.objects.filter(league=league).order_by('week')
+        return render(request, 'fifa/league_admin.html', {'league': league, 'players': players, 'matches': matches})
     return render(request, 'fifa/league_admin.html', {'league': league, 'players': players})
+
+
+def end_registration(request, league_id):
+    league = get_object_or_404(League, id=league_id)
+    league.registration = False
+    league.save()
+    return HttpResponseRedirect(reverse('admin_league', args=(league.id,)))

@@ -3,6 +3,7 @@ from django.db import models
 
 class League(models.Model):
     name = models.CharField(max_length=100)
+    registration = models.BooleanField(default=True)
     start = models.BooleanField(default=False)
     finish = models.BooleanField(default=False)
 
