@@ -4,26 +4,35 @@
 {% block title %}Torneos DCC{% endblock %}
 {% block head %}
     <script type="text/javascript">
-    $(function () { $('#matchModal').on('show.bs.modal', function (event){
-        var button = $(event.relatedTarget);
-        var local = button.data('local');
-        var visit = button.data('visit');
-        var match_id = button.data('match')
-        var modal = $(this);
-        modal.find('#local-addon').text(local);
-        modal.find('#visit-addon').text(visit);
-        modal.find('#result-form').attr('action', '/fifa/match/result/' + match_id + '/');
-    });});
+        $(function () { $('#matchModal').on('show.bs.modal', function (event){
+            var button = $(event.relatedTarget);
+            var local = button.data('local');
+            var visit = button.data('visit');
+            var match_id = button.data('match')
+            var modal = $(this);
+            modal.find('#local-addon').text(local);
+            modal.find('#visit-addon').text(visit);
+            modal.find('#result-form').attr('action', '/fifa/match/result/' + match_id + '/');
+            modal.find('#result-form').attr('info', match_id);
+        });});
 
-    /*$(function () { $('#submit').click(function (){
-        var url = $('#result-form').attr('action');
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: $('#result-form').serialize()
-        });
-        return false;
-    });});*/
+        $(function () { $('#submit').click(function (){
+            var url = $('#result-form').attr('action');
+            var match_id = $('#result-form').attr('info');
+            var td = document.getElementById(match_id);
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: $('#result-form').serialize()
+            });
+            var visit = document.getElementById('visit-name');
+            var local = document.getElementById('local-name');
+            td.innerHTML = local.value + ' - ' + visit.value;
+            visit.value = '';
+            local.value = '';
+            $('#matchModal').modal('hide');
+            return false;
+        });});
     </script>
 {% endblock %}
 
@@ -50,25 +59,25 @@
                 <hr/>
                 <table class="table table-hover table-striped table-condensed">
                     <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Team</th>
-                        </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Team</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for player in players  %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ player.name }}</td>
-                                <td>{{ player.team }}</td>
-                            </tr>
-                        {% endfor %}
+                    {% for player in players  %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.team }}</td>
+                        </tr>
+                    {% endfor %}
 
                     </tbody>
                 </table>
                 {% if league.registration %}
-                <a class="btn btn-default" href="{% url 'new_player' league.id %}">Agregar Jugador</a>
+                    <a class="btn btn-default" href="{% url 'new_player' league.id %}">Agregar Jugador</a>
                 {% endif %}
             </div>
 
@@ -79,31 +88,31 @@
                 {% if matches %}
                     <table class="table table-hover table-striped table-condensed">
                         <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Local</th>
-                                <th>Resultado</th>
-                                <th>Visita</th>
-                            </tr>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Local</th>
+                            <th>Resultado</th>
+                            <th>Visita</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {% for match in matches %}
-                                <tr>
-                                    <td>{{ match.week }}</td>
-                                    <td>{{ match.local }}</td>
-                                    {% ifequal match.local_score -1 %}
-                                        <td><a data-toggle="modal"
-                                               data-target="#matchModal"
-                                               data-local="{{ match.local }}"
-                                               data-visit="{{ match.visit }}"
-                                               data-match="{{ match.id }}">Enviar Resultado</a></td>
+                        {% for match in matches %}
+                            <tr>
+                                <td>{{ match.week }}</td>
+                                <td>{{ match.local }}</td>
+                                {% ifequal match.local_score -1 %}
+                                    <td id="{{ match.id }}"><a data-toggle="modal"
+                                                                     data-target="#matchModal"
+                                                                     data-local="{{ match.local }}"
+                                                                     data-visit="{{ match.visit }}"
+                                                                     data-match="{{ match.id }}">Enviar Resultado</a></td>
 
-                                    {% else %}
-                                        <td>{{ match.local_score }} - {{ match.visit_score }}</td>
-                                    {% endifequal %}
-                                    <td>{{ match.visit }}</td>
-                                </tr>
-                            {% endfor %}
+                                {% else %}
+                                    <td>{{ match.local_score }} - {{ match.visit_score }}</td>
+                                {% endifequal %}
+                                <td>{{ match.visit }}</td>
+                            </tr>
+                        {% endfor %}
 
                         </tbody>
                     </table>
@@ -134,38 +143,38 @@
 
             <!-- Modal -->
             <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="matchModalLabel">Enviar resultado</h4>
-                  </div>
-                  <div class="modal-body">
-                    <form id="result-form" method="POST" action="{% url 'set_match_result' 1 %}">
-                      {% csrf_token %}
-                      <div class="form-group">
-                        <label for="local-name" class="control-label">Local:</label>
-                        <div class="input-group">
-                            <span class="input-group-addon" id="local-addon"></span>
-                            <input type="text" class="form-control" id="local-name" name="local">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="matchModalLabel">Enviar resultado</h4>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="visit-name" class="control-label">Visita:</label>
-                        <div class="input-group">
-                            <span class="input-group-addon" id="visit-addon"></span>
-                            <input type="text" class="form-control" id="visit-name" name="visit">
+                        <div class="modal-body">
+                            <form id="result-form" method="POST" action="{% url 'set_match_result' 1 %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="local-name" class="control-label">Local:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="local-addon"></span>
+                                        <input type="text" class="form-control" id="local-name" name="local">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="visit-name" class="control-label">Visita:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="visit-addon"></span>
+                                        <input type="text" class="form-control" id="visit-name" name="visit">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                    <button id="submit" type="button" class="btn btn-primary">Enviar</button>
+                                </div>
+                            </form>
                         </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button id="submit" type="submit" class="btn btn-primary">Enviar</button>
-                       </div>
-                    </form>
-                  </div>
 
+                    </div>
                 </div>
-              </div>
             </div>
 
         </div>

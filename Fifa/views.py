@@ -83,5 +83,6 @@ def set_result(request, match_id):
         match.local_score = local
         match.visit_score = visit
         match.save()
-        return HttpResponseRedirect(reverse('admin_league', args=(match.league.id,)))
+        #return HttpResponseRedirect(reverse('admin_league', args=(match.league.id,)))
+        return HttpResponse(status=200)
     return HttpResponse(status=404)
