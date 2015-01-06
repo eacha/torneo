@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+
 <!-- Head -->
 {% block title %}Torneos DCC{% endblock %}
 {% block head %}
@@ -33,28 +34,34 @@
             $('#matchModal').modal('hide');
             return false;
         });});
+
+    //var myGroup = $('#panel');
+    $(function () {$('#panel').on('show.bs.collapse', function() {
+        $('#panel').find('.collapse.in').collapse('hide');
+    });});
+
     </script>
 {% endblock %}
 
 <!-- Body -->
 {% block content %}
 
-    <div class="container">
+    <div id="panel" class="container">
         <h2>Torneo {{ league.name }}</h2>
         <hr/>
 
         <div class="col-md-2">
             <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#">Jugadores</a></li>
-                <li><a href="#">Partidos</a></li>
-                <li><a href="#">Administrar</a></li>
+                <li><a data-toggle="collapse" data-parent="panel" href="#jugadores" aria-expanded="true"  aria-controls="jugadores">Jugadores</a></li>
+                <li><a data-toggle="collapse" data-parent="panel" href="#partidos" aria-expanded="false" aria-controls="partidos">Partidos</a></li>
+                <li><a data-toggle="collapse" data-parent="panel" href="#administrar" aria-expanded="false" aria-controls="administrar">Administrar</a></li>
             </ul>
         </div>
 
         <div class="col-md-10">
 
             <!-- Jugadores -->
-            <div id="Jugadores" class="row">
+            <div id="jugadores" class="row collapse in">
                 <h3>Jugadores</h3>
                 <hr/>
                 <table class="table table-hover table-striped table-condensed">
@@ -82,7 +89,7 @@
             </div>
 
             <!-- Partidos -->
-            <div id="Partidos" class="row">
+            <div id="partidos" class="row collapse">
                 <h3>Partidos</h3>
                 <hr/>
                 {% if matches %}
@@ -127,7 +134,7 @@
             </div>
 
             <!-- Administrar -->
-            <div id="Administrar" class="row">
+            <div id="administrar" class="row collapse">
                 <h3>Administrar</h3>
                 <hr/>
                 <div class="btn-group btn-group-lg">
@@ -179,4 +186,5 @@
 
         </div>
     </div>
+
 {% endblock %}
