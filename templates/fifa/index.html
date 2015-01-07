@@ -1,5 +1,14 @@
 {% extends "base.html" %}
+<!-- Header -->
 {% block title %} Torneos DCC {% endblock %}
+{% block head %}
+<script>
+    $(function () {$('#panel').on('show.bs.collapse', function() {
+        $('#panel').find('.collapse.in').collapse('hide');
+    });});
+</script>
+{% endblock %}
+<!-- Body -->
 {% block navbar %}
     <ul class="nav navbar-nav navbar-right">
         <li><a href="#">Register</a></li>
@@ -13,7 +22,7 @@
             <h1>Torneos Dcc</h1>
             <p>Pagina oficial de torneos del Dcc</p>
             <p>
-            <a class="btn btn-primary btn-lg">Inscribete</a>
+                <a class="btn btn-primary btn-lg">Inscribete</a>
             </p>
         </div>
     </div>
@@ -25,46 +34,89 @@
             <ul class="nav nav-pills nav-stacked">
                 {% for league in leagues %}
                     {% if forloop.first %}
-                        <li class="active" role="presentation"><a href="{% url 'admin_league' league.id %}">{{ league.name }}</a></li>
+                        <li role="presentation"><a data-toggle="collapse" data-parent="panel" href="#{{ league.name }}"
+                                                   aria-expanded="true"  aria-controls="{{ league.name }}">{{ league.name }}</a></li>
                     {% else %}
-                        <li role="presentation"><a href="{% url 'admin_league' league.id %}">{{ league.name }}</a></li>
+                        <li role="presentation"><a data-toggle="collapse" data-parent="panel" href="#{{ league.name }}"
+                                                   aria-expanded="false"  aria-controls="{{ league.name }}">{{ league.name }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
         </div>
 
-        <div class="col-md-8">
-            <h2 class="sub-header">Torneo 1</h2>
-            <hr>
-            <table class="table table-hover table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Played</th>
-                        <th>Wins</th>
-                        <th>Losses</th>
-                        <th>Draws</th>
-                        <th>F/A</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for position in table  %}
-                    <tr>
-                        <td><b>{{ forloop.counter }}</b></td>
-                        <td>{{ position.player }}</td>
-                        <td>{{ position.played }}</td>
-                        <td>{{ position.wins }}</td>
-                        <td>{{ position.losses }}</td>
-                        <td>{{ position.draws }}</td>
-                        <td>{{ position.forGoal }}/{{ position.againstGoal }}</td>
-                        <td>{{ position.points }}</td>
-                    </tr>
-                {% endfor %}
+        <div class="col-md-8" id="panel">
+            {% for table in tables %}
+                {% if forloop.first  %}
+                    <div id="{{ table.0.league.name }}" class="row collapse in">
+                {% else %}
+                    <div id="{{ table.0.league.name }}" class="row collapse">
+                {% endif %}
+                    <h2 class="sub-header">Torneo {{ table.0.league.name }}</h2>
+                    <hr>
+                    <table class="table table-hover table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Played</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Draws</th>
+                            <th>F/A</th>
+                            <th>Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for position in table  %}
+                            <tr>
+                                <td><b>{{ forloop.counter }}</b></td>
+                                <td>{{ position.player }}</td>
+                                <td>{{ position.played }}</td>
+                                <td>{{ position.wins }}</td>
+                                <td>{{ position.losses }}</td>
+                                <td>{{ position.draws }}</td>
+                                <td>{{ position.forGoal }}/{{ position.againstGoal }}</td>
+                                <td>{{ position.points }}</td>
+                            </tr>
+                        {% endfor %}
 
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+
+{##}
+{#            <h2 class="sub-header">Torneo 1</h2>#}
+{#            <hr>#}
+{#            <table class="table table-hover table-striped table-condensed">#}
+{#                <thead>#}
+{#                <tr>#}
+{#                    <th>#</th>#}
+{#                    <th>Name</th>#}
+{#                    <th>Played</th>#}
+{#                    <th>Wins</th>#}
+{#                    <th>Losses</th>#}
+{#                    <th>Draws</th>#}
+{#                    <th>F/A</th>#}
+{#                    <th>Points</th>#}
+{#                </tr>#}
+{#                </thead>#}
+{#                <tbody>#}
+{#                {% for position in table  %}#}
+{#                    <tr>#}
+{#                        <td><b>{{ forloop.counter }}</b></td>#}
+{#                        <td>{{ position.player }}</td>#}
+{#                        <td>{{ position.played }}</td>#}
+{#                        <td>{{ position.wins }}</td>#}
+{#                        <td>{{ position.losses }}</td>#}
+{#                        <td>{{ position.draws }}</td>#}
+{#                        <td>{{ position.forGoal }}/{{ position.againstGoal }}</td>#}
+{#                        <td>{{ position.points }}</td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{##}
+{#                </tbody>#}
+{#            </table>#}
         </div>
 
     </div>

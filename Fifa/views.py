@@ -63,8 +63,11 @@ def generate_match(request, league_id):
 
 def index(request):
     leagues = League.objects.all()
-    table = PositionTable.objects.all()
-    return render(request, 'fifa/index.html', {'leagues': leagues, 'table': table})
+    tables = []
+    for league in leagues:
+        table = PositionTable.objects.filter(league=league)
+        tables.append(table)
+    return render(request, 'fifa/index.html', {'leagues': leagues, 'tables': tables})
 
 
 def admin_league(request, league_id):
