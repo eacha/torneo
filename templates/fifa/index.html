@@ -30,9 +30,6 @@
                         <li role="presentation"><a href="{% url 'admin_league' league.id %}">{{ league.name }}</a></li>
                     {% endif %}
                 {% endfor %}
-{#                <li role="presentation" class="active"><a href="#">Torneo 1</a></li>#}
-{#                <li role="presentation"><a href="#">Torneo 2</a></li>#}
-{#                <li role="presentation"><a href="#">Torneo 3</a></li>#}
             </ul>
         </div>
 
@@ -53,46 +50,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                {% for position in table  %}
                     <tr>
-                        <td><b>1</b></td>
-                        <td>jugador 1</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>10/2</td>
-                        <td>13</td>
+                        <td><b>{{ forloop.counter }}</b></td>
+                        <td>{{ position.player }}</td>
+                        <td>{{ position.played }}</td>
+                        <td>{{ position.wins }}</td>
+                        <td>{{ position.losses }}</td>
+                        <td>{{ position.draws }}</td>
+                        <td>{{ position.forGoal }}/{{ position.againstGoal }}</td>
+                        <td>{{ position.points }}</td>
                     </tr>
-                    <tr>
-                        <td><b>2</b></td>
-                        <td>jugador 1</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>10/2</td>
-                        <td>13</td>
-                    </tr>
-                    <tr>
-                        <td><b>3</b></td>
-                        <td>jugador 1</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>10/2</td>
-                        <td>13</td>
-                    </tr>
-                    <tr>
-                        <td><b>4</b></td>
-                        <td>jugador 1</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>10/2</td>
-                        <td>13</td>
-                    </tr>
+                {% endfor %}
+
                 </tbody>
             </table>
         </div>

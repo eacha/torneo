@@ -30,3 +30,22 @@ class Match(models.Model):
 
     def __unicode__(self):
         return self.local.__unicode__() + " - " + self.visit.__unicode__()
+
+
+class PositionTable(models.Model):
+    league = models.ForeignKey(League)
+    player = models.ForeignKey(Player)
+    played = models.IntegerField(default=0)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+    draws = models.IntegerField(default=0)
+    forGoal = models.IntegerField(default=0)
+    againstGoal = models.IntegerField(default=0)
+    goalDifference = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-points', '-goalDifference', '-forGoal']
+
+    def __unicode__(self):
+        return self.league.__unicode__() + " " + self.player.__unicode__()

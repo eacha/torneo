@@ -30,15 +30,7 @@ class Fixture:
         for i in xrange(0, self.number_of_player / 2):
             if self.player_array[i] != -1 and self.player_array[i + (self.number_of_player / 2) != -1]:
                 if self.normal_round:
-                    round.append((self.player_array[i], self.player_array[i + (self.number_of_player / 2)]))
+                    round.append((self.player_array[i], self.player_array[self.number_of_player - i - 1]))
                 else:
-                    round.append((self.player_array[i + (self.number_of_player / 2)], self.player_array[i]))
+                    round.append((self.player_array[self.number_of_player - i - 1], self.player_array[i]))
         return round
-
-class ble:
-
-    def __init__(self, a):
-        self.name = a
-
-    def __str__(self):
-        return str(self.name)

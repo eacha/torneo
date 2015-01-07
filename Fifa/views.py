@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from Fifa.forms import LeagueForm, PlayerForm
-from Fifa.models import League, Player, Match
+from Fifa.models import League, Player, Match,PositionTable
 from Fix.Fixture import Fixture
 
 
@@ -36,9 +36,16 @@ def generate_match(request, league_id):
     league = get_object_or_404(League, id=league_id)
     if not league.start:
         players = Player.objects.filter(league=league)
+        # Created Position Table
+        for player in players:
+            position = PositionTable(league=league,
+                                     player=player)
+            position.save()
+        # Created Matchs
         fix = Fixture(list(players))
         fixture = fix.generate()
         counter = 1
+
         for round in fixture:
             for match in round:
                 element = Match(league=league,
@@ -56,7 +63,8 @@ def generate_match(request, league_id):
 
 def index(request):
     leagues = League.objects.all()
-    return render(request, 'fifa/index.html', {'leagues': leagues})
+    table = PositionTable.objects.all()
+    return render(request, 'fifa/index.html', {'leagues': leagues, 'table': table})
 
 
 def admin_league(request, league_id):
@@ -77,12 +85,52 @@ def end_registration(request, league_id):
 
 def set_result(request, match_id):
     if request.POST:
+
+        # Setting the match result
         match = get_object_or_404(Match, id=match_id)
-        local = request.POST.get("local", "")
-        visit = request.POST.get("visit", "")
+        local = int(request.POST.get("local", ""))
+        visit = int(request.POST.get("visit", ""))
         match.local_score = local
         match.visit_score = visit
         match.save()
-        #return HttpResponseRedirect(reverse('admin_league', args=(match.league.id,)))
+
+        # Upload the position table
+        player1 = PositionTable.objects.get(player=match.local)
+        player2 = PositionTable.objects.get(player=match.visit)
+        # Wins, Losses, Draws and Points
+        print local
+        print visit
+        if local > visit:
+            player1.wins += 1
+            player2.losses += 1
+            player1.points += 3
+        elif local < visit:
+            player1.losses += 1
+            player2.wins += 1
+            player2.points += 3
+        else:
+            player1.draws += 1
+            player2.draws += 1
+            player1.points += 1
+            player2.points += 1
+
+        # For and Against Goals
+        player1.forGoal += int(local)
+        player1.againstGoal += int(visit)
+
+        player2.forGoal += int(visit)
+        player2.againstGoal += int(local)
+
+        # Goal Difference
+        player1.goalDifference = int(player1.forGoal)- int(player1.againstGoal)
+        player2.goalDifference = int(player2.forGoal)- int(player2.againstGoal)
+
+        # Played Matches
+        player1.played += 1
+        player2.played += 1
+
+        player1.save()
+        player2.save()
+
         return HttpResponse(status=200)
     return HttpResponse(status=404)
