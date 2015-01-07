@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+<!-- Header -->
+{% block title %} Torneos DCC - Register{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form method="POST" action="{% url 'register' %}" >
+                {% csrf_token %}
+                <legend>Register</legend>
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button class="btn btn-default" type="submit">Enviar</button>
+                {% endbuttons %}
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endblock %}

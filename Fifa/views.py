@@ -1,7 +1,8 @@
+from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from Fifa.forms import LeagueForm, PlayerForm
+from Fifa.forms import LeagueForm, PlayerForm, RegistrationForm, LoginForm
 from Fifa.models import League, Player, Match,PositionTable
 from Fix.Fixture import Fixture
 
@@ -137,3 +138,29 @@ def set_result(request, match_id):
 
         return HttpResponse(status=200)
     return HttpResponse(status=404)
+
+
+def register(request):
+    if request.POST:
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = RegistrationForm()
+    return render(request, 'fifa/register.html', {'form': form})
+
+
+def login_view(request):
+    if request.POST:
+        user = authenticate(username=request.POST['user'], password=request.POST['password'])
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+
+        form = LoginForm(initial={'user': request.POST['user']})
+        return render(request, 'fifa/login.html', {'form': form, 'fail': True})
+    else:
+        form = LoginForm()
+    return render(request, 'fifa/login.html', {'form': form})

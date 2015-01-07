@@ -2,6 +2,8 @@ from django.conf.urls import patterns, url
 from Fifa import views
 
 urlpatterns = patterns('',
+                       url(r'^login/', views.login_view, name='login'),
+                       url(r'^register/', views.register, name='register'),
                        url(r'^league/new/', views.new_league, name='new_league'),
                        url(r'^league/admin/(?P<league_id>\d+)/', views.admin_league, name='admin_league'),
                        url(r'^league/registration/(?P<league_id>\d+)/', views.end_registration, name='end_league_registration'),
