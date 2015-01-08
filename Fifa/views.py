@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -65,10 +65,14 @@ def generate_match(request, league_id):
 def index(request):
     leagues = League.objects.all()
     tables = []
+    matches = []
     for league in leagues:
         table = PositionTable.objects.filter(league=league)
         tables.append(table)
-    return render(request, 'fifa/index.html', {'leagues': leagues, 'tables': tables})
+        match = Match.objects.filter(league=league)
+        matches.append(match)
+    list = zip(tables, matches)
+    return render(request, 'fifa/index.html', {'leagues': leagues, 'info': list})
 
 
 def admin_league(request, league_id):
@@ -164,3 +168,8 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'fifa/login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')

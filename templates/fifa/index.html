@@ -2,21 +2,33 @@
 <!-- Header -->
 {% block title %} Torneos DCC {% endblock %}
 {% block head %}
-<script>
-    $(function () {$('#panel').on('show.bs.collapse', function() {
-        $('#panel').find('.collapse.in').collapse('hide');
-    });});
-</script>
+    <script>
+        // only one panel is visible at same time
+        $(function () {$('#panel').on('show.bs.collapse', function() {
+            $('#panel').find('.collapse.in').collapse('hide');
+        });});
+        // set the active class for li tags
+        $(function () {$('.actived').click(function (){
+            $('.actived').removeClass('active');
+            $(this).attr('class', 'actived active');
+        });});
+    </script>
 {% endblock %}
 <!-- Body -->
 {% block navbar %}
     <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'register' %}">Register</a></li>
-        <li><a href="{% url 'login' %}">Sign In</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ user.username }}</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Sign In</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 
 {% block content %}
+    <!-- Jumbotron -->
     <div class="container">
         <div class="jumbotron">
             <h1>Torneos Dcc</h1>
@@ -30,60 +42,95 @@
     <!--	Table	-->
     <div class="container">
 
-        <div class="col-md-4">
-            <ul class="nav nav-pills nav-stacked">
-                {% for league in leagues %}
-                    {% if forloop.first %}
-                        <li role="presentation"><a data-toggle="collapse" data-parent="panel" href="#{{ league.name }}"
-                                                   aria-expanded="true"  aria-controls="{{ league.name }}">{{ league.name }}</a></li>
-                    {% else %}
-                        <li role="presentation"><a data-toggle="collapse" data-parent="panel" href="#{{ league.name }}"
-                                                   aria-expanded="false"  aria-controls="{{ league.name }}">{{ league.name }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="col-md-8" id="panel">
-            {% for table in tables %}
-                {% if forloop.first  %}
-                    <div id="{{ table.0.league.name }}" class="row collapse in">
+    <div class="col-md-4">
+        <ul class="nav nav-pills nav-stacked">
+            {% for league in leagues %}
+                {% if forloop.first %}
+                    <li class="actived active" role="presentation"><a data-toggle="collapse" data-parent="panel" href="#{{ league.name }}"
+                                               aria-expanded="true"  aria-controls="{{ league.name }}">{{ league.name }}</a></li>
                 {% else %}
-                    <div id="{{ table.0.league.name }}" class="row collapse">
+                    <li class="actived" role="presentation"><a data-toggle="collapse" data-parent="panel" href="#{{ league.name }}"
+                                               aria-expanded="false"  aria-controls="{{ league.name }}">{{ league.name }}</a></li>
                 {% endif %}
-                    <h2 class="sub-header">Torneo {{ table.0.league.name }}</h2>
-                    <hr>
-                    <table class="table table-hover table-striped table-condensed">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Played</th>
-                            <th>Wins</th>
-                            <th>Losses</th>
-                            <th>Draws</th>
-                            <th>F/A</th>
-                            <th>Points</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for position in table  %}
-                            <tr>
-                                <td><b>{{ forloop.counter }}</b></td>
-                                <td>{{ position.player }}</td>
-                                <td>{{ position.played }}</td>
-                                <td>{{ position.wins }}</td>
-                                <td>{{ position.losses }}</td>
-                                <td>{{ position.draws }}</td>
-                                <td>{{ position.forGoal }}/{{ position.againstGoal }}</td>
-                                <td>{{ position.points }}</td>
-                            </tr>
-                        {% endfor %}
-
-                        </tbody>
-                    </table>
-                </div>
             {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col-md-8" id="panel">
+        {% for table, matches in info %}
+            {% if forloop.first  %}
+                <div id="{{ table.0.league.name }}" class="row collapse in">
+            {% else %}
+                <div id="{{ table.0.league.name }}" class="row collapse">
+            {% endif %}
+        <h2 class="sub-header">Torneo {{ table.0.league.name }}</h2>
+        <hr>
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#">Tabla</a></li>
+            <li role="presentation"><a href="#">Partidos</a></li>
+        </ul>
+        <table class="table table-hover table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Played</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Draws</th>
+                <th>F/A</th>
+                <th>Points</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for position in table  %}
+                <tr>
+                    <td><b>{{ forloop.counter }}</b></td>
+                    <td>{{ position.player }}</td>
+                    <td>{{ position.played }}</td>
+                    <td>{{ position.wins }}</td>
+                    <td>{{ position.losses }}</td>
+                    <td>{{ position.draws }}</td>
+                    <td>{{ position.forGoal }}/{{ position.againstGoal }}</td>
+                    <td>{{ position.points }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Partidos -->
+        <table class="table table-hover table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Local</th>
+                <th>Resultado</th>
+                <th>Visita</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for match in matches %}
+                <tr>
+                    <td>{{ match.week }}</td>
+                    <td>{{ match.local }}</td>
+                    {% ifequal match.local_score -1 %}
+                        <td id="{{ match.id }}"><a data-toggle="modal"
+                                                   data-target="#matchModal"
+                                                   data-local="{{ match.local }}"
+                                                   data-visit="{{ match.visit }}"
+                                                   data-match="{{ match.id }}">Enviar Resultado</a></td>
+
+                    {% else %}
+                        <td>{{ match.local_score }} - {{ match.visit_score }}</td>
+                    {% endifequal %}
+                    <td>{{ match.visit }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+        </div>
+        {% endfor %}
         </div>
     </div>
 {% endblock %}

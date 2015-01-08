@@ -3,6 +3,7 @@ from Fifa import views
 
 urlpatterns = patterns('',
                        url(r'^login/', views.login_view, name='login'),
+                       url(r'^logout/', views.logout_view, name='logout'),
                        url(r'^register/', views.register, name='register'),
                        url(r'^league/new/', views.new_league, name='new_league'),
                        url(r'^league/admin/(?P<league_id>\d+)/', views.admin_league, name='admin_league'),
