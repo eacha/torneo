@@ -63,7 +63,7 @@ def generate_match(request, league_id):
 
 
 def index(request):
-    leagues = League.objects.all()
+    leagues = League.objects.filter(start=True)
     tables = []
     matches = []
     for league in leagues:
