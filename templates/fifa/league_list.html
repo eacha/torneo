@@ -6,8 +6,16 @@
         <div class="col-md-8">
             <ul class="list-group">
                 {% for league in leagues %}
-                    <li class="list-group-item"><i class="fa fa-trophy"></i>
-                        {{ league.name }}</li>
+                    <li class="list-group-item">
+                        <a href="{% url 'league_details' league.id %}"><i class="fa fa-trophy"></i> {{ league.name|title }}</a>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-info active" role="progressbar"
+                                 aria-valuenow="{{ league.played_matches }}" aria-valuemin="0" aria-valuemax="{{ league.total_matches }}"
+                                 style="width: {% widthratio league.played_matches league.total_matches 100 %}%;">
+                                {{ league.played_matches }}/{{ league.total_matches }}
+                            </div>
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
         </div>

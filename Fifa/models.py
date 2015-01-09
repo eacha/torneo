@@ -6,6 +6,8 @@ class League(models.Model):
     registration = models.BooleanField(default=True)
     start = models.BooleanField(default=False)
     finish = models.BooleanField(default=False)
+    played_matches = models.IntegerField(default=0)
+    total_matches = models.IntegerField(default=100)
 
     def __unicode__(self):
         return self.name

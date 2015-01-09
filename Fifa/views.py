@@ -57,7 +57,11 @@ def generate_match(request, league_id):
                                 visit_score=-1)
                 element.save()
             counter += 1
+
+        # set league properties
+        matches = Match.objects.filter(league=league).count()
         league.start = True
+        league.total_matches = matches
         league.save()
     return HttpResponseRedirect(reverse('league_details', args=(league.id,)))
 
@@ -139,8 +143,13 @@ def set_result(request, match_id):
         player1.played += 1
         player2.played += 1
 
+        # League Info
+        league = match.league
+        league.played_matches += 1
+
         player1.save()
         player2.save()
+        league.save()
 
         return HttpResponse(status=200)
     return HttpResponse(status=404)
