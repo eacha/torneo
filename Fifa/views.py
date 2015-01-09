@@ -59,36 +59,38 @@ def generate_match(request, league_id):
             counter += 1
         league.start = True
         league.save()
-    return HttpResponseRedirect(reverse('admin_league', args=(league.id,)))
+    return HttpResponseRedirect(reverse('league_details', args=(league.id,)))
 
 
 def index(request):
     leagues = League.objects.filter(start=True)
-    tables = []
-    matches = []
-    for league in leagues:
-        table = PositionTable.objects.filter(league=league)
-        tables.append(table)
-        match = Match.objects.filter(league=league)
-        matches.append(match)
-    list = zip(tables, matches)
-    return render(request, 'fifa/index.html', {'leagues': leagues, 'info': list})
+    if leagues is not None:
+        tables = []
+        matches = []
+        for league in leagues:
+            table = PositionTable.objects.filter(league=league)
+            tables.append(table)
+            match = Match.objects.filter(league=league)
+            matches.append(match)
+        list = zip(tables, matches)
+        return render(request, 'fifa/index.html', {'leagues': leagues, 'info': list})
+    return render(request, 'fifa/index.html')
 
 
-def admin_league(request, league_id):
+def league_details(request, league_id):
     league = get_object_or_404(League, id=league_id)
     players = Player.objects.filter(league=league)
     if league.start:
         matches = Match.objects.filter(league=league).order_by('week')
-        return render(request, 'fifa/league_admin.html', {'league': league, 'players': players, 'matches': matches})
-    return render(request, 'fifa/league_admin.html', {'league': league, 'players': players})
+        return render(request, 'fifa/league_details.html', {'league': league, 'players': players, 'matches': matches})
+    return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
 
 
 def end_registration(request, league_id):
     league = get_object_or_404(League, id=league_id)
     league.registration = False
     league.save()
-    return HttpResponseRedirect(reverse('admin_league', args=(league.id,)))
+    return HttpResponseRedirect(reverse('league_details', args=(league.id,)))
 
 
 def set_result(request, match_id):
@@ -173,3 +175,8 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+def leagues(request):
+    leagues = League.objects.all().order_by('-id')
+    return render(request, 'fifa/league_list.html', {'leagues': leagues})

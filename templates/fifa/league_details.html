@@ -35,10 +35,9 @@
             return false;
         });});
 
-    //var myGroup = $('#panel');
-    $(function () {$('#panel').on('show.bs.collapse', function() {
-        $('#panel').find('.collapse.in').collapse('hide');
-    });});
+        $(function () {$('#panel').on('show.bs.collapse', function() {
+            $('#panel').find('.collapse.in').collapse('hide');
+        });});
 
     </script>
 {% endblock %}
@@ -54,7 +53,9 @@
             <ul class="nav nav-pills nav-stacked">
                 <li><a data-toggle="collapse" data-parent="panel" href="#jugadores" aria-expanded="true"  aria-controls="jugadores">Jugadores</a></li>
                 <li><a data-toggle="collapse" data-parent="panel" href="#partidos" aria-expanded="false" aria-controls="partidos">Partidos</a></li>
+                {% if user.is_superuser %}
                 <li><a data-toggle="collapse" data-parent="panel" href="#administrar" aria-expanded="false" aria-controls="administrar">Administrar</a></li>
+                {% endif %}
             </ul>
         </div>
 
@@ -108,12 +109,15 @@
                                 <td>{{ match.week }}</td>
                                 <td>{{ match.local }}</td>
                                 {% ifequal match.local_score -1 %}
+                                    {% if user.is_superuser %}
                                     <td id="{{ match.id }}"><a data-toggle="modal"
                                                                      data-target="#matchModal"
                                                                      data-local="{{ match.local }}"
                                                                      data-visit="{{ match.visit }}"
                                                                      data-match="{{ match.id }}">Enviar Resultado</a></td>
-
+                                    {% else %}
+                                     <td></td>
+                                    {% endif %}
                                 {% else %}
                                     <td>{{ match.local_score }} - {{ match.visit_score }}</td>
                                 {% endifequal %}
@@ -124,16 +128,10 @@
                         </tbody>
                     </table>
                 {% endif %}
-{#                <ul class="pagination">#}
-{#                    <li><a href="{% url 'admin_league' league.id %}?page=1">1</a></li>#}
-{#                    <li><a href="{% url 'admin_league' league.id %}?page=2">2</a></li>#}
-{#                    <li><a href="#">3</a></li>#}
-{#                    <li><a href="#">4</a></li>#}
-{#                    <li><a href="#">5</a></li>#}
-{#                </ul>#}
             </div>
 
             <!-- Administrar -->
+            {% if user.is_superuser %}
             <div id="administrar" class="row collapse">
                 <h3>Administrar</h3>
                 <hr/>
@@ -183,6 +181,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
         </div>
     </div>
