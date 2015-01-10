@@ -76,10 +76,7 @@ def index(request):
         for league in leagues:
             table = PositionTable.objects.filter(league=league)
             tables.append(table)
-            match = Match.objects.filter(league=league)
-            matches.append(match)
-        list = zip(tables, matches)
-        return render(request, 'fifa/index.html', {'leagues': leagues, 'info': list})
+        return render(request, 'fifa/index.html', {'leagues': leagues, 'tables': tables})
     return render(request, 'fifa/index.html')
 
 
