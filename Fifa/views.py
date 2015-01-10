@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from Fifa.forms import LeagueForm, PlayerForm, RegistrationForm, LoginForm
-from Fifa.models import League, Player, Match,PositionTable
+from Fifa.models import League, Player, Match, PositionTable
 from Fix.Fixture import Fixture
 
 
@@ -60,6 +61,7 @@ def generate_match(request, league_id):
 
         # set league properties
         matches = Match.objects.filter(league=league).count()
+        league.registration = False
         league.start = True
         league.total_matches = matches
         league.save()
@@ -90,7 +92,7 @@ def league_details(request, league_id):
     return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
 
 
-def end_registration(request, league_id):
+def finish_registration(request, league_id):
     league = get_object_or_404(League, id=league_id)
     league.registration = False
     league.save()
@@ -186,6 +188,16 @@ def logout_view(request):
     return HttpResponseRedirect('/')
 
 
-def leagues(request):
+def league_list(request):
     leagues = League.objects.all().order_by('-id')
-    return render(request, 'fifa/league_list.html', {'leagues': leagues})
+    paginator = Paginator(leagues, 10)
+
+    page = request.GET.get('page')
+    try:
+        list = paginator.page(page)
+    except PageNotAnInteger:
+        list = paginator.page(1)
+    except EmptyPage:
+        list = paginator.page(paginator.num_pages)
+
+    return render(request, 'fifa/league_list.html', {'leagues': list})

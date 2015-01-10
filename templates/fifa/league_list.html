@@ -1,23 +1,52 @@
 {% extends 'base.html' %}
+{% load bootstrap_pagination %}
 {% block title %}Torneos Dcc - Torneos{% endblock %}
 {% block content %}
     <div class="container">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            <ul class="list-group">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th width="35%">Nombre</th>
+                    <th width="35%">Progreso</th>
+                    <th style="text-align: right;">Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+
                 {% for league in leagues %}
-                    <li class="list-group-item">
-                        <a href="{% url 'league_details' league.id %}"><i class="fa fa-trophy"></i> {{ league.name|title }}</a>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-info active" role="progressbar"
-                                 aria-valuenow="{{ league.played_matches }}" aria-valuemin="0" aria-valuemax="{{ league.total_matches }}"
-                                 style="width: {% widthratio league.played_matches league.total_matches 100 %}%;">
-                                {{ league.played_matches }}/{{ league.total_matches }}
+                    <tr>
+                        <td><a href="{% url 'league_details' league.id %}"><i class="fa fa-trophy"></i> {{ league.name|title }}</a></td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-warning active" role="progressbar"
+                                     aria-valuenow="{{ league.played_matches }}" aria-valuemin="0" aria-valuemax="{{ league.total_matches }}"
+                                     style="width: {% widthratio league.played_matches league.total_matches 100 %}%;">
+                                    <span style="color:#333; font-weight:bold ">{{ league.played_matches }}/{{ league.total_matches }}</span>
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </td>
+                        <td style="text-align: right;">
+                            {% if league.registration %}
+                                <span class="label label-success"><i class="fa fa-user"></i> Inscripciones Abiertas</span>
+                            {% elif league.start %}
+                                <span class="label label-info"><i class="fa fa-gamepad"></i> Iniciado</span>
+                            {% elif league.finish%}
+                                <span class="label label-danger"><i class="fa fa-lock"></i> Finalizado</span>
+                            {% else %}
+                                <span class="label label-warning"><i class="fa fa-close"></i> Inscripciones Cerradas</span>
+                            {% endif %}
+
+
+                        </td>
+                    </tr>
                 {% endfor %}
-            </ul>
+                </tbody>
+            </table>
+            <div class="text-center">
+            {% bootstrap_paginate leagues range=10 %}
+            </div>
         </div>
         <div class="col-md-2"></div>
     </div>

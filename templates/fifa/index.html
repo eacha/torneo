@@ -102,47 +102,47 @@
             </div>
 
             <!-- Partidos -->
-            <h3 class="sub-header">Partidos</h3>
-            <div id="match-{{ table.0.league.id }}">
-                <table class="table table-hover table-striped table-condensed">
-                    <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Local</th>
-                        <th>Resultado</th>
-                        <th>Visita</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for match in matches %}
-                        <tr>
-                            <td>{{ match.week }}</td>
-                            <td>{{ match.local }}</td>
-                            {% ifequal match.local_score -1 %}
-                                {% if user.is_superuser %}
-                                <td id="{{ match.id }}"><a data-toggle="modal"
-                                                           data-target="#matchModal"
-                                                           data-local="{{ match.local }}"
-                                                           data-visit="{{ match.visit }}"
-                                                           data-match="{{ match.id }}">Enviar Resultado</a></td>
-                                {% else %}
-                                <td></td>
-                                {% endif %}
-
-                            {% else %}
-                                <td>{{ match.local_score }} - {{ match.visit_score }}</td>
-                            {% endifequal %}
-                            <td>{{ match.visit }}</td>
-                        </tr>
-                    {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
+{#            <h3 class="sub-header">Partidos</h3>#}
+{#            <div id="match-{{ table.0.league.id }}">#}
+{#                <table class="table table-hover table-striped table-condensed">#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th>Fecha</th>#}
+{#                        <th>Local</th>#}
+{#                        <th>Resultado</th>#}
+{#                        <th>Visita</th>#}
+{#                    </tr>#}
+{#                    </thead>#}
+{#                    <tbody>#}
+{#                    {% for match in matches %}#}
+{#                        <tr>#}
+{#                            <td>{{ match.week }}</td>#}
+{#                            <td>{{ match.local }}</td>#}
+{#                            {% ifequal match.local_score -1 %}#}
+{#                                {% if user.is_superuser %}#}
+{#                                <td id="{{ match.id }}"><a data-toggle="modal"#}
+{#                                                           data-target="#matchModal"#}
+{#                                                           data-local="{{ match.local }}"#}
+{#                                                           data-visit="{{ match.visit }}"#}
+{#                                                           data-match="{{ match.id }}">Enviar Resultado</a></td>#}
+{#                                {% else %}#}
+{#                                <td></td>#}
+{#                                {% endif %}#}
+{##}
+{#                            {% else %}#}
+{#                                <td>{{ match.local_score }} - {{ match.visit_score }}</td>#}
+{#                            {% endifequal %}#}
+{#                            <td>{{ match.visit }}</td>#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{##}
+{#                    </tbody>#}
+{#                </table>#}
+{#            </div>#}
             </div>
 
             <!-- boton de detalles -->
-                <a class="btn btn-default" href="{% url 'league_details' table.0.league.id %}">detalles</a>
+                <a class="btn btn-default" href="{% url 'league_details' table.0.league.id %}">Detalles</a>
             {% endfor %}
             </div>
         </div>
