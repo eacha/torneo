@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response
 from Fifa.forms import LeagueForm, PlayerForm, RegistrationForm, LoginForm
 from Fifa.models import League, Player, Match, PositionTable
 from Fix.Fixture import Fixture
@@ -198,3 +198,7 @@ def league_list(request):
         list = paginator.page(paginator.num_pages)
 
     return render(request, 'fifa/league_list.html', {'leagues': list})
+
+
+def cover(request):
+    return render_to_response('Fifa/cover.html')

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "fifa/base2.html" %}
 {% load bootstrap3 %}
 
 <!-- Head -->
@@ -9,7 +9,7 @@
             var button = $(event.relatedTarget);
             var local = button.data('local');
             var visit = button.data('visit');
-            var match_id = button.data('match')
+            var match_id = button.data('match');
             var modal = $(this);
             modal.find('#local-addon').text(local);
             modal.find('#visit-addon').text(visit);
