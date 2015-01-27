@@ -12,7 +12,10 @@ urlpatterns = patterns('',
                        url(r'^player/new/(?P<league_id>\d+)/', views.new_player, name='new_player'),
                        url(r'^match/generate/(?P<league_id>\d+)/', views.generate_match, name='generate_match'),
                        url(r'^match/result/(?P<match_id>\d+)/', views.set_result, name='set_match_result'),
+
                        url(r'^cover/', views.cover, name='cover'),
+                       url(r'^inicio/', views.inicio, name='inicio'),
+
 
                        url(r'^$', views.index, name='index'),
 )

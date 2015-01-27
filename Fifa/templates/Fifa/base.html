@@ -14,10 +14,10 @@
     <link href="{% static 'Fifa/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'Fifa/css/full-slider.css' %}" rel="stylesheet">
     <link href="{% static 'Fifa/css/sb-admin-2.css' %}" rel="stylesheet">
-{#    <link href="{% static 'Fifa/css/metisMenu.css' %}" rel="stylesheet">#}
+{#    <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">#}
     <link href="{% static 'Fifa/css/font-awesome.min.css' %}" rel="stylesheet">
 
-
+q
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -25,15 +25,58 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    {% block srcipt %}{% endblock %}
+    {% block script %}{% endblock %}
 
 
 </head>
 <body>
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+    <div class="container">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Torneos DCC</a>
+
+        <ul class="nav navbar-top-links navbar-right">
+            {% if not user.is_authenticated %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" style="padding:17px;">
+                        <form method="post" action="{% url 'Fifa.views.login_view' %}">
+                            {% csrf_token %}
+                            <label>Nombre de Usuario </label>
+                            {{ form.user }}
+                            <label>Contraseña </label>
+                            {{ form.password }}
+                            <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                        </form>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+            {% endif %}
+            <!-- /.dropdown -->
+        </ul>
+    </div>
+    <!-- /.navbar-top-links -->
+    {% block sidebar %} {% endblock %}
+</nav>
 
 {% block content %}
 
 {% endblock %}
+
+<script src="{% static 'Fifa/js/jquery.js' %}"></script>
+<script src="{% static 'Fifa/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'Fifa/js/sb-admin-2.js' %}"></script>
+<script src="{% static 'Fifa/js/metisMenu.js' %}"></script>
+
+{% block bodyscript %} {% endblock %}
 
 </body>
 </html>

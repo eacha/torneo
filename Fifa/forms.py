@@ -37,5 +37,5 @@ class RegistrationForm(UserCreationForm):
 
 
 class LoginForm(Form):
-    user = forms.CharField(required=True)
-    password = forms.CharField(required=True, widget=forms.PasswordInput())
+    user = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Nombre de Usuario'}))
+    password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'placeholder': 'Contrasena'}))

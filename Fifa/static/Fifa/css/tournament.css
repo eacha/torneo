@@ -25,3 +25,11 @@ body {
     position: absolute;
     width: 90%;
 }
+
+.sidebar {
+    margin-top: 2px;
+}
+
+/*.navbar-default{*/
+    /*background-color: rgba(42, 29, 16, 0.11);*/
+/*}*/

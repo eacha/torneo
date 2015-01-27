@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
+from django.template import RequestContext
 from Fifa.forms import LeagueForm, PlayerForm, RegistrationForm, LoginForm
 from Fifa.models import League, Player, Match, PositionTable
 from Fix.Fixture import Fixture
@@ -201,4 +203,14 @@ def league_list(request):
 
 
 def cover(request):
-    return render_to_response('Fifa/cover.html')
+    data = {'form': LoginForm()}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/cover.html', c)
+
+
+@login_required()
+def inicio(request):
+    leagues = League.objects.all()
+    data = {'leagues': leagues}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/inicio.html', c)
