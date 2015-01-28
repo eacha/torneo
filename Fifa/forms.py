@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Form
-from Fifa.models import League, Player
+from Fifa.models_V1 import League, Player
 
 
 class LeagueForm(ModelForm):

@@ -5,23 +5,32 @@
     <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">
 {% endblock %}
 
+{% block mobile %}
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+{% endblock %}
+
 {% block sidebar %}
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 {% for league in leagues %}
-                <li>
-                    <a href="#"><i class="fa fa-trophy fa-fw"></i> {{ league.name }}<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="morris.html">Tabla de Posiciones</a>
-                        </li>
-                        <li>
-                            <a href="morris.html">Partidos</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
+                    <li>
+                        <a href="#"><i class="fa fa-trophy fa-fw"></i> {{ league.name }}<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="morris.html">Tabla de Posiciones</a>
+                            </li>
+                            <li>
+                                <a href="morris.html">Partidos</a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
                 {% endfor %}
             </ul>
         </div>

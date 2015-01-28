@@ -6,7 +6,7 @@ from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from Fifa.forms import LeagueForm, PlayerForm, RegistrationForm, LoginForm
-from Fifa.models import League, Player, Match, PositionTable
+from Fifa.models_V1 import League, Player, Match, PositionTable
 from Fix.Fixture import Fixture
 
 
