@@ -10,7 +10,7 @@ class Player(models.Model):
     # league = models.ForeignKey(League)
 
     def __unicode__(self):
-        return self.name
+        return self.user.username
 
 
 class Team(models.Model):
@@ -25,7 +25,8 @@ class League(models.Model):
     name = models.CharField(max_length=100)
     registration = models.BooleanField(default=True)
     playing = models.BooleanField(default=False)
-    players = models.ManyToManyField(Player, through=LeaguePlayer)
+    players = models.ManyToManyField(Player, through='LeaguePlayer')
+    max_players = models.IntegerField(default=16)
     # start = models.BooleanField(default=False)
     # finish = models.BooleanField(default=False)
     played_matches = models.IntegerField(default=0)
@@ -38,7 +39,7 @@ class League(models.Model):
 class LeaguePlayer(models.Model):
     id_player = models.ForeignKey(Player)
     id_league = models.ForeignKey(League)
-    id_team = models.ForeignKey(Team)
+    id_team = models.ForeignKey(Team, null=True)
 
     def __unicode__(self):
         return self.id_player.user.name + '-' + self.id_league.name
@@ -57,7 +58,7 @@ class Match(models.Model):
     league = models.ForeignKey(League)
     local = models.ForeignKey(Player, related_name='match_locals')
     visit = models.ForeignKey(Player, related_name='match_visits')
-    round = models.IntegerField
+    round = models.IntegerField()
     week = models.ForeignKey(Week)
     local_score = models.IntegerField()
     visit_score = models.IntegerField()
@@ -83,3 +84,13 @@ class PositionTable(models.Model):
 
     def __unicode__(self):
         return self.league.__unicode__() + " " + self.player.__unicode__()
+
+class RegistrationLeague(models.Model):
+    player = models.ForeignKey(Player)
+    league = models.ForeignKey(League)
+    team1 = models.ForeignKey(Team, related_name='team1')
+    team2 = models.ForeignKey(Team, related_name='team2')
+    team3 = models.ForeignKey(Team, related_name='team3')
+
+    class Meta:
+        unique_together = (('player', 'league'),)

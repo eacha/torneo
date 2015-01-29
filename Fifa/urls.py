@@ -9,12 +9,14 @@ urlpatterns = patterns('',
                        url(r'^league/details/(?P<league_id>\d+)/', views.league_details, name='league_details'),
                        url(r'^league/new/', views.new_league, name='new_league'),
                        url(r'^league/registration/(?P<league_id>\d+)/', views.finish_registration, name='end_league_registration'),
-                       url(r'^player/new/(?P<league_id>\d+)/', views.new_player, name='new_player'),
+                       # url(r'^player/new/(?P<league_id>\d+)/', views.new_player, name='new_player'),
                        url(r'^match/generate/(?P<league_id>\d+)/', views.generate_match, name='generate_match'),
                        url(r'^match/result/(?P<match_id>\d+)/', views.set_result, name='set_match_result'),
 
                        url(r'^cover/', views.cover, name='cover'),
                        url(r'^inicio/', views.inicio, name='inicio'),
+                       url(r'^administration/', views.administration, name='administration'),
+
 
 
                        url(r'^$', views.index, name='index'),
