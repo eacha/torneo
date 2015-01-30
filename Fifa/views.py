@@ -3,11 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
+from django.forms import formset_factory
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
-from Fifa.forms import LeagueForm, RegistrationForm, LoginForm
-from Fifa.models import League, Player, Match, PositionTable
+from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection
+from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague
 from Fix.Fixture import Fixture
 
 
@@ -48,6 +49,12 @@ def register(request):
     return render(request, 'Fifa/register.html', {'form': form})
 
 
+def cover(request):
+    data = {'form': LoginForm()}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/cover.html', c)
+
+
 @staff_member_required
 def administration(request):
     leagues = League.objects.all()
@@ -56,15 +63,55 @@ def administration(request):
     return render_to_response('fifa/administration.html', c)
 
 
+@staff_member_required
+def admin_leagues(request):
+    leagues = League.objects.all()
+    data = {'leagues': leagues}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/admin_leagues.html', c)
+
+
+@staff_member_required
 def new_league(request):
     if request.POST:
         form = LeagueForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = LeagueForm()
+            leagues = League.objects.all()
+            data = {'leagues': leagues}
+            c = RequestContext(request, data)
+            return render_to_response('Fifa/admin_leagues.html', c)
+
+    form = LeagueForm()
     return render(request, 'fifa/league_form.html', {'form': form})
+
+
+@staff_member_required
+def edit_league(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    if league.registration:
+        registrated = RegistrationLeague.objects.filter(league=league)
+        TeamSelectionSet = formset_factory(TeamSelection, extra=0)
+        initial_data = []
+        for player in registrated:
+            choices = {'selected_team': [('0', 'Elegir equipo'),
+                                         (str(player.team1.id), player.team1.name),
+                                         (str(player.team2.id), player.team2.name),
+                                         (str(player.team3.id), player.team3.name)]}
+            initial_data += [choices]
+
+        forms = TeamSelectionSet(initial=initial_data)
+        # for form in forms:
+        #     form.fields['selected_team'].choices.append(('1', 'sasad'))
+
+        # print registrated
+        # print form
+        data = {'data': zip(registrated, forms)}
+        c = RequestContext(request, data)
+        return render_to_response('Fifa/edit_league.html', c)
+    elif league.playing:
+        pass
+
 
 
 # def new_player(request, league_id):
@@ -226,10 +273,7 @@ def league_list(request):
     return render(request, 'fifa/league_list.html', {'leagues': list})
 
 
-def cover(request):
-    data = {'form': LoginForm()}
-    c = RequestContext(request, data)
-    return render_to_response('Fifa/cover.html', c)
+
 
 
 @login_required()

@@ -9,7 +9,11 @@ class LeagueForm(ModelForm):
 
     class Meta:
         model = League
-        fields = ['name']
+        fields = ['name', 'max_players']
+        labels = {
+            'name': 'Nombre de la Liga',
+            'max_players': 'Maximo numero de jugadores'
+        }
 
 
 # class PlayerForm(ModelForm):
@@ -40,3 +44,14 @@ class RegistrationForm(UserCreationForm):
 class LoginForm(Form):
     user = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Nombre de Usuario'}))
     password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'placeholder': 'Contrasena'}))
+
+
+class TeamSelection(Form):
+    CHOICES = (('0', 'Elegir equipo'),)
+    selected_team = forms.ChoiceField(choices=CHOICES)
+
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        choices = initial['selected_team']
+        super(TeamSelection, self).__init__(*args, **kwargs)
+        self.fields['selected_team'].choices = choices

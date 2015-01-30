@@ -35,6 +35,10 @@ class League(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_progress(self):
+        perc = (self.played_matches * 100) / self.total_matches
+        return perc
+
 
 class LeaguePlayer(models.Model):
     id_player = models.ForeignKey(Player)
@@ -84,6 +88,7 @@ class PositionTable(models.Model):
 
     def __unicode__(self):
         return self.league.__unicode__() + " " + self.player.__unicode__()
+
 
 class RegistrationLeague(models.Model):
     player = models.ForeignKey(Player)

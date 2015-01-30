@@ -1,0 +1,57 @@
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu">
+            <li>
+                <h4 class="text-center"><i class="fa fa-user fa-fw"></i> Hola, {{ user.first_name }}</h4>
+            </li>
+            {% if user.is_staff %}
+                <li>
+                    <a href="#">
+                        <i class="fa fa-edit fa-fw"></i> Administar
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'Fifa.views.admin_leagues' %}">
+                                <i class="fa fa-futbol-o fa-fw"></i> Ligas
+                            </a>
+                        </li>
+                        <li>
+                            <a href="morris.html">
+                                <i class="fa fa-users fa-fw"></i> DCCan@s
+                            </a>
+                        </li>
+                        <li>
+                            <a href="morris.html">
+                                <i class="fa fa-calendar fa-fw"></i>Semanas
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+            {% for league in leagues %}
+                <li>
+                    <a href="#">
+                        <i class="fa fa-trophy fa-fw"></i> {{ league.name }}
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="morris.html">Tabla de Posiciones</a>
+                        </li>
+                        <li>
+                            <a href="morris.html">Partidos</a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+            {% endfor %}
+            <li class="visible-xs-block">
+                <a href="{% url 'Fifa.views.logout_view' %}">
+                    Salir <i class="fa fa-sign-out fa-fw"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /.sidebar-collapse -->
+</div>
