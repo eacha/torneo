@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Form
-from Fifa.models import League, Player
+from Fifa.models import League, Player, Week
 
 
 class LeagueForm(ModelForm):
@@ -52,6 +52,12 @@ class TeamSelection(Form):
 
     def __init__(self, *args, **kwargs):
         initial = kwargs.get('initial', {})
-        choices = initial['selected_team']
+        choices = initial.get('selected_team', None)
         super(TeamSelection, self).__init__(*args, **kwargs)
-        self.fields['selected_team'].choices = choices
+        if choices:
+            self.fields['selected_team'].choices = choices
+
+
+class TeamSelectionDates(Form):
+    matches_per_week = forms.IntegerField()
+    start_week = forms.ModelChoiceField(queryset=Week.objects.all())

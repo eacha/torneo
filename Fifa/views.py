@@ -7,8 +7,8 @@ from django.forms import formset_factory
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
-from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection
-from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague
+from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionDates
+from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, LeaguePlayer, Team, Week
 from Fix.Fixture import Fixture
 
 
@@ -90,27 +90,50 @@ def new_league(request):
 def edit_league(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     if league.registration:
-        registrated = RegistrationLeague.objects.filter(league=league)
+        registers = RegistrationLeague.objects.filter(league=league)
         TeamSelectionSet = formset_factory(TeamSelection, extra=0)
+
         initial_data = []
-        for player in registrated:
+        for register in registers:
             choices = {'selected_team': [('0', 'Elegir equipo'),
-                                         (str(player.team1.id), player.team1.name),
-                                         (str(player.team2.id), player.team2.name),
-                                         (str(player.team3.id), player.team3.name)]}
+                                         (str(register.team1.id), register.team1.name),
+                                         (str(register.team2.id), register.team2.name),
+                                         (str(register.team3.id), register.team3.name)]}
             initial_data += [choices]
 
-        forms = TeamSelectionSet(initial=initial_data)
-        # for form in forms:
-        #     form.fields['selected_team'].choices.append(('1', 'sasad'))
+        if request.POST:
+            forms = TeamSelectionSet(request.POST, request.FILES, initial=initial_data)
+            form_dates = TeamSelectionDates(request.POST)
+            if forms.is_valid() and form_dates.is_valid():
+                for form, register in zip(forms, registers):
+                    team = Team.objects.get(pk=int(form.cleaned_data['selected_team']))
+                    inscription = LeaguePlayer(player=register.player,
+                                               league=league,
+                                               team=team)
+                    inscription.save()
+                # start_week = Week.objects.get(pk=form_dates.cleaned_data['start_week'])
+                start_week = form_dates.cleaned_data['start_week']
+                generate_match(league,form_dates.cleaned_data['matches_per_week'], start_week)
+                # league.registration = False
+                # league.playing = True
+                # league.save()
+                url = reverse('Fifa.views.inicio')
+                return HttpResponseRedirect(url)
 
-        # print registrated
-        # print form
-        data = {'data': zip(registrated, forms)}
+        forms = TeamSelectionSet(initial=initial_data)
+        form_dates = TeamSelectionDates()
+        data = {'data': zip(registers, forms),
+                'form': forms,
+                'form_dates': form_dates}
         c = RequestContext(request, data)
-        return render_to_response('Fifa/edit_league.html', c)
-    elif league.playing:
-        pass
+        return render_to_response('Fifa/edit_league_registration.html', c)
+    else:
+        league = get_object_or_404(League, id=league_id)
+        players = LeaguePlayer.objects.filter(league=league)
+        if league.playing:
+            matches = Match.objects.filter(league=league).order_by('week')
+            return render(request, 'fifa/league_details.html', {'league': league, 'players': players, 'matches': matches})
+        return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
 
 
 
@@ -129,10 +152,9 @@ def edit_league(request, league_id):
 #     return render(request, 'fifa/player_form.html', {'form': form, 'league': league})
 
 
-def generate_match(request, league_id):
-    league = get_object_or_404(League, id=league_id)
-    if not league.start:
-        players = Player.objects.filter(league=league)
+def generate_match(league, matches_per_week, start_week):
+    if league.registration:
+        players = league.players.all()
         # Created Position Table
         for player in players:
             position = PositionTable(league=league,
@@ -142,25 +164,29 @@ def generate_match(request, league_id):
         fix = Fixture(list(players))
         fixture = fix.generate()
         counter = 1
-
+        week = start_week
         for round in fixture:
             for match in round:
                 element = Match(league=league,
                                 local=match[0],
                                 visit=match[1],
-                                week=counter,
+                                round=counter,
+                                week=week,
                                 local_score=-1,
                                 visit_score=-1)
                 element.save()
             counter += 1
+            if counter % matches_per_week == 1:
+                next_week = week.number + 1
+                week = Week.objects.get(number=next_week)
 
         # set league properties
         matches = Match.objects.filter(league=league).count()
         league.registration = False
-        league.start = True
+        league.playing = True
         league.total_matches = matches
         league.save()
-    return HttpResponseRedirect(reverse('league_details', args=(league.id,)))
+
 
 
 def index(request):

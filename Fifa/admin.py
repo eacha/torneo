@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, Team
+from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, Team, Week
 
 admin.site.register(League)
 
@@ -8,3 +8,4 @@ admin.site.register(PositionTable)
 admin.site.register(Player)
 admin.site.register(RegistrationLeague)
 admin.site.register(Team)
+admin.site.register(Week)

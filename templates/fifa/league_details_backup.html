@@ -53,7 +53,7 @@
                 <li><a data-toggle="collapse" data-parent="panel" href="#jugadores" aria-expanded="true"  aria-controls="jugadores">Jugadores</a></li>
                 <li><a data-toggle="collapse" data-parent="panel" href="#partidos" aria-expanded="false" aria-controls="partidos">Partidos</a></li>
                 {% if user.is_superuser %}
-                <li><a data-toggle="collapse" data-parent="panel" href="#administrar" aria-expanded="false" aria-controls="administrar">Administrar</a></li>
+                    <li><a data-toggle="collapse" data-parent="panel" href="#administrar" aria-expanded="false" aria-controls="administrar">Administrar</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -109,13 +109,13 @@
                                 <td>{{ match.local }}</td>
                                 {% ifequal match.local_score -1 %}
                                     {% if user.is_superuser %}
-                                    <td id="{{ match.id }}"><a data-toggle="modal"
-                                                                     data-target="#matchModal"
-                                                                     data-local="{{ match.local }}"
-                                                                     data-visit="{{ match.visit }}"
-                                                                     data-match="{{ match.id }}">Enviar Resultado</a></td>
+                                        <td id="{{ match.id }}"><a data-toggle="modal"
+                                                                   data-target="#matchModal"
+                                                                   data-local="{{ match.local }}"
+                                                                   data-visit="{{ match.visit }}"
+                                                                   data-match="{{ match.id }}">Enviar Resultado</a></td>
                                     {% else %}
-                                     <td></td>
+                                        <td></td>
                                     {% endif %}
                                 {% else %}
                                     <td>{{ match.local_score }} - {{ match.visit_score }}</td>
@@ -131,55 +131,55 @@
 
             <!-- Administrar -->
             {% if user.is_superuser %}
-            <div id="administrar" class="row collapse">
-                <h3>Administrar</h3>
-                <hr/>
-                <div class="btn-group btn-group-lg">
-                    {% if not league.registration%}
-                        <a class="btn btn-default disabled" href="#">Cerrar Inscripción</a>
-                    {% else %}
-                        <a class="btn btn-default" href="{% url 'end_league_registration' league.id %}">Cerrar Inscripción</a>
-                    {% endif %}
-                    <a class="btn btn-default" href="{% url 'generate_match' league.id %}">Generar Partidos</a>
-                    <a class="btn btn-default" href="#">Cerrar Torneo</a>
-                </div>
-            </div>
-
-            <!-- Modal -->
-            <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="matchModalLabel">Enviar resultado</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form id="result-form" method="POST" action="{% url 'set_match_result' 1 %}">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="local-name" class="control-label">Local:</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="local-addon"></span>
-                                        <input type="text" class="form-control" id="local-name" name="local">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="visit-name" class="control-label">Visita:</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="visit-addon"></span>
-                                        <input type="text" class="form-control" id="visit-name" name="visit">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                    <button id="submit" type="button" class="btn btn-primary">Enviar</button>
-                                </div>
-                            </form>
-                        </div>
-
+                <div id="administrar" class="row collapse">
+                    <h3>Administrar</h3>
+                    <hr/>
+                    <div class="btn-group btn-group-lg">
+                        {% if not league.registration%}
+                            <a class="btn btn-default disabled" href="#">Cerrar Inscripción</a>
+                        {% else %}
+                            <a class="btn btn-default" href="{% url 'end_league_registration' league.id %}">Cerrar Inscripción</a>
+                        {% endif %}
+                        <a class="btn btn-default" href="{% url 'generate_match' league.id %}">Generar Partidos</a>
+                        <a class="btn btn-default" href="#">Cerrar Torneo</a>
                     </div>
                 </div>
-            </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="matchModalLabel">Enviar resultado</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form id="result-form" method="POST" action="{% url 'set_match_result' 1 %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="local-name" class="control-label">Local:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="local-addon"></span>
+                                            <input type="text" class="form-control" id="local-name" name="local">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="visit-name" class="control-label">Visita:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="visit-addon"></span>
+                                            <input type="text" class="form-control" id="visit-name" name="visit">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                        <button id="submit" type="button" class="btn btn-primary">Enviar</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             {% endif %}
 
         </div>

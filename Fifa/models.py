@@ -27,8 +27,6 @@ class League(models.Model):
     playing = models.BooleanField(default=False)
     players = models.ManyToManyField(Player, through='LeaguePlayer')
     max_players = models.IntegerField(default=16)
-    # start = models.BooleanField(default=False)
-    # finish = models.BooleanField(default=False)
     played_matches = models.IntegerField(default=0)
     total_matches = models.IntegerField(default=100)
 
@@ -41,12 +39,12 @@ class League(models.Model):
 
 
 class LeaguePlayer(models.Model):
-    id_player = models.ForeignKey(Player)
-    id_league = models.ForeignKey(League)
-    id_team = models.ForeignKey(Team, null=True)
+    player = models.ForeignKey(Player)
+    league = models.ForeignKey(League)
+    team = models.ForeignKey(Team, null=True)
 
     def __unicode__(self):
-        return self.id_player.user.name + '-' + self.id_league.name
+        return self.player.user.name + '-' + self.league.name
 
 
 class Week(models.Model):
@@ -55,7 +53,10 @@ class Week(models.Model):
     finish = models.DateField()
 
     def __unicode__(self):
-        return self.number
+        return str(self.number)
+
+    class Meta:
+        ordering = ['number']
 
 
 class Match(models.Model):
