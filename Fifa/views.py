@@ -7,6 +7,7 @@ from django.forms import formset_factory
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
+from math import floor
 from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionDates
 from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, LeaguePlayer, Team, Week
 from Fix.Fixture import Fixture
@@ -41,7 +42,6 @@ def register(request):
             user = form.save()
             player = Player(user=user, twitter_account=form.cleaned_data['twitter'])
             player.save()
-            login(request, user)
             url = reverse('Fifa.views.login_view')
             return HttpResponseRedirect(url)
 
@@ -111,29 +111,56 @@ def edit_league(request, league_id):
                                                league=league,
                                                team=team)
                     inscription.save()
-                # start_week = Week.objects.get(pk=form_dates.cleaned_data['start_week'])
                 start_week = form_dates.cleaned_data['start_week']
                 generate_match(league,form_dates.cleaned_data['matches_per_week'], start_week)
-                # league.registration = False
-                # league.playing = True
-                # league.save()
-                url = reverse('Fifa.views.inicio')
+
+                url = reverse('Fifa.views.edit_league')
                 return HttpResponseRedirect(url)
 
         forms = TeamSelectionSet(initial=initial_data)
         form_dates = TeamSelectionDates()
+        leagues = League.objects.all()
         data = {'data': zip(registers, forms),
+                'league': league,
                 'form': forms,
-                'form_dates': form_dates}
+                'form_dates': form_dates,
+                'leagues': leagues}
         c = RequestContext(request, data)
         return render_to_response('Fifa/edit_league_registration.html', c)
     else:
         league = get_object_or_404(League, id=league_id)
         players = LeaguePlayer.objects.filter(league=league)
-        if league.playing:
-            matches = Match.objects.filter(league=league).order_by('week')
-            return render(request, 'fifa/league_details.html', {'league': league, 'players': players, 'matches': matches})
-        return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
+        # if league.playing:
+        leagues = League.objects.all()
+        matches = Match.objects.filter(league=league).order_by('week')
+        matches_per_week = floor(league.players.count() / 2)
+
+        paginator = Paginator(matches, matches_per_week)
+        page = request.GET.get('page')
+        try:
+            matches = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            matches = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            matches = paginator.page(paginator.num_pages)
+
+        data = {'league': league,
+                'players': players,
+                'matches': matches,
+                'leagues': leagues,
+                'fecha': matches.object_list[0].round}
+        return render(request, 'fifa/league_details.html', data)
+        # return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
+
+@staff_member_required
+def end_league(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    league.playing = False
+    league.save()
+    return edit_league(request, league_id)
+
 
 
 
@@ -206,7 +233,12 @@ def league_details(request, league_id):
     players = Player.objects.filter(league=league)
     if league.start:
         matches = Match.objects.filter(league=league).order_by('week')
-        return render(request, 'fifa/league_details.html', {'league': league, 'players': players, 'matches': matches})
+        leagues = League.objects.all()
+        data = {'league': league,
+                'players': players,
+                'matches': matches,
+                'leagues': leagues}
+        return render(request, 'fifa/league_details.html', data)
     return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
 
 
@@ -219,21 +251,56 @@ def finish_registration(request, league_id):
 
 def set_result(request, match_id):
     if request.POST:
-
         # Setting the match result
         match = get_object_or_404(Match, id=match_id)
+        player1 = PositionTable.objects.get(league=match.league, player=match.local)
+        player2 = PositionTable.objects.get(league=match.league, player=match.visit)
+
+        #Editing old result
+        if match.local_score != -1:
+            old_local = match.local_score
+            old_visit = match.visit_score
+
+            if old_local > old_visit:
+                player1.wins -= 1
+                player2.losses -= 1
+                player1.points -= 3
+            elif old_local < old_visit:
+                player1.losses -= 1
+                player2.wins -= 1
+                player2.points -= 3
+            else:
+                player1.draws -= 1
+                player2.draws -= 1
+                player1.points -= 1
+                player2.points -= 1
+
+            # For and Against Goals
+            player1.forGoal -= int(old_local)
+            player1.againstGoal -= int(old_visit)
+
+            player2.forGoal -= int(old_visit)
+            player2.againstGoal -= int(old_local)
+
+            # Goal Difference
+            player1.goalDifference = int(player1.forGoal) - int(player1.againstGoal)
+            player2.goalDifference = int(player2.forGoal) - int(player2.againstGoal)
+
+            # Played Matches
+            player1.played -= 1
+            player2.played -= 1
+
+            # League Info
+            league = match.league
+            league.played_matches -= 1
+
         local = int(request.POST.get("local", ""))
         visit = int(request.POST.get("visit", ""))
         match.local_score = local
         match.visit_score = visit
         match.save()
 
-        # Upload the position table
-        player1 = PositionTable.objects.get(player=match.local)
-        player2 = PositionTable.objects.get(player=match.visit)
         # Wins, Losses, Draws and Points
-        print local
-        print visit
         if local > visit:
             player1.wins += 1
             player2.losses += 1
@@ -271,7 +338,23 @@ def set_result(request, match_id):
         player2.save()
         league.save()
 
-        return HttpResponse(status=200)
+        matches = Match.objects.filter(league=league).order_by('week')
+        matches_per_week = floor(league.players.count() / 2)
+        paginator = Paginator(matches, matches_per_week)
+        page = request.GET.get('page')
+
+        try:
+            matches = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            matches = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            matches = paginator.page(paginator.num_pages)
+
+        data = {'matches': matches}
+        c = RequestContext(request, data)
+        return render_to_response('Fifa/matches.html', c)
     return HttpResponse(status=404)
 
 

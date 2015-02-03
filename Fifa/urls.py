@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 
                        url(r'^cover/', views.cover, name='cover'),
                        url(r'^inicio/', views.inicio, name='inicio'),
+                       url(r'^administration/leagues/end/(?P<league_id>\d+)/', views.end_league, name='end_league'),
                        url(r'^administration/leagues/edit/(?P<league_id>\d+)/', views.edit_league, name='edit_league'),
                        url(r'^administration/leagues/new/', views.new_league, name='new_league'),
                        url(r'^administration/leagues/', views.admin_leagues, name='admin_leagues'),

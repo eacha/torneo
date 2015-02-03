@@ -1,0 +1,41 @@
+{% for match in matches %}
+    <tr>
+        {% if  match.local_score > match.visit_score %}
+            <td class="success">{{ match.local }}</td>
+        {% else %}
+            <td>{{ match.local }}</td>
+        {% endif %}
+        {% ifequal match.local_score -1 %}
+            {% if user.is_superuser and league.playing %}
+                <td id="{{ match.id }}" class="text-center">
+                    <a href="#"
+                       data-toggle="modal"
+                       data-target="#matchModal"
+                       data-local="{{ match.local }}"
+                       data-visit="{{ match.visit }}"
+                       data-match="{{ match.id }}">Enviar Resultado</a>
+                </td>
+            {% else %}
+                <td></td>
+            {% endif %}
+        {% else %}
+            {% if user.is_superuser and league.playing %}
+                <td id="{{ match.id }}" class="text-center">
+                    <a href="#"
+                       data-toggle="modal"
+                       data-target="#matchModal"
+                       data-local="{{ match.local }}"
+                       data-visit="{{ match.visit }}"
+                       data-match="{{ match.id }}">{{ match.local_score }} - {{ match.visit_score }}</a>
+                </td>
+            {% else %}
+                <td class="text-center">{{ match.local_score }} - {{ match.visit_score }}</td>
+            {% endif %}
+        {% endifequal %}
+        {% if  match.local_score < match.visit_score %}
+            <td class="success">{{ match.visit }}</td>
+        {% else %}
+            <td>{{ match.visit }}</td>
+        {% endif %}
+    </tr>
+{% endfor %}

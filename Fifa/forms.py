@@ -25,11 +25,12 @@ class LeagueForm(ModelForm):
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required = True)
-    twitter = forms.CharField()
+    twitter = forms.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'twitter','password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'twitter','password1', 'password2')
+        required = ('first_name')
 
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit = False)

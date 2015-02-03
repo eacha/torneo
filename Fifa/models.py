@@ -10,7 +10,7 @@ class Player(models.Model):
     # league = models.ForeignKey(League)
 
     def __unicode__(self):
-        return self.user.username
+        return self.user.first_name
 
 
 class Team(models.Model):

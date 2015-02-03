@@ -42,6 +42,11 @@
                         <li>
                             <a href="morris.html">Partidos</a>
                         </li>
+                        {% if user.is_staff %}
+                            <li>
+                            <a href="{% url 'Fifa.views.edit_league' league.id%}">Administrar</a>
+                        </li>
+                        {% endif %}
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
