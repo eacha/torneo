@@ -54,6 +54,7 @@ MIDDLEWARE_CLASSES = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
+
 )
 
 ROOT_URLCONF = 'Torneo.urls'
@@ -105,3 +106,10 @@ STATICFILES_FINDERS = (
 )
 
 LOGIN_URL = '/fifa/login'
+
+if DEBUG:
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_HOST_USER = 'miletomc'
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True

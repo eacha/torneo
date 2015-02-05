@@ -1,0 +1,27 @@
+{% extends "fifa/base2.html" %}
+{% load bootstrap3 %}
+<!-- Header -->
+{% block title %} Torneos DCC - Login{% endblock %}
+{% block content %}
+    <div class="content">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <form method="POST" action="{% url 'login' %}" >
+                {% csrf_token %}
+                <legend>Login</legend>
+                {% if fail %}
+                    <div class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        El usuario o la contraseña que has introducido no son correctas.
+                    </div>
+                {% endif %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button class="btn btn-default" type="submit">Enviar</button>
+                {% endbuttons %}
+                <a href="{% url 'password_reset' %}">Constraseña olvidada</a>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+{% endblock %}

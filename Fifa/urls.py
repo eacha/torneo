@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url
+from django.contrib.auth.views import password_reset
 from Fifa import views
+from Fifa.forms import ResetPasswordForm
 
 urlpatterns = patterns('',
                        url(r'^login/', views.login_view, name='login'),
@@ -21,8 +23,30 @@ urlpatterns = patterns('',
                        url(r'^administration/leagues/', views.admin_leagues, name='admin_leagues'),
                        url(r'^administration/', views.administration, name='administration'),
 
+                       url(r'^user/password/reset/$',
+                           'django.contrib.auth.views.password_reset',
+                           {'post_reset_redirect': '/fifa/user/password/reset/done/',
+                            'template_name': 'Fifa/password_reset_form.html',
+                            'email_template_name': 'Fifa/password_reset_email.html'},
+                           name="password_reset"),
+
+                       url(r'^user/password/reset/done/$',
+                           'django.contrib.auth.views.password_reset_done',
+                           {'template_name': 'Fifa/password_reset_done.html'}),
+
+                       url(r'^user/password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+                           'django.contrib.auth.views.password_reset_confirm',
+                           {'post_reset_redirect': '/fifa/user/password/done/',
+                            'template_name': 'Fifa/password_reset_confirm.html',
+                            'set_password_form': ResetPasswordForm},
+                           name='password_reset_confirm'),
+
+                       url(r'^user/password/done/$',
+                           'django.contrib.auth.views.password_reset_complete',
+                           {'template_name': 'Fifa/password_reset_complete.html'}),
 
 
 
-                       url(r'^$', views.index, name='index'),
-)
+
+                       url(r'^$', views.inicio, name='index'),
+                       )

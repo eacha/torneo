@@ -42,12 +42,22 @@
                     <ul class="dropdown-menu" style="padding:17px;">
                         <form method="post" action="{% url 'Fifa.views.login_view' %}">
                             {% csrf_token %}
-                            <label>Nombre de Usuario </label>
-                            {{ form.user }}
-                            <label>Contraseña </label>
-                            {{ form.password }}
-                            <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                            <li class="form-group">
+                                <label>Nombre de Usuario </label>
+                                {{ form.user }}
+                            </li>
+                            <li class="form-group">
+                                <label>Contraseña </label>
+                                {{ form.password }}
+                            </li>
+                            <li class="form-group">
+                                <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                            </li>
                         </form>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{% url 'password_reset' %}">Constraseña olvidada</a>
+                        </li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>

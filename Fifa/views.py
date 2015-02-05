@@ -23,7 +23,7 @@ def login_view(request):
                 return HttpResponseRedirect(url)
 
         form = LoginForm(initial={'user': request.POST['user']})
-        return render(request, 'fifa/login.html', {'form': form, 'fail': True})
+        return render(request, 'Fifa/login.html', {'form': form, 'fail': True})
     else:
         form = LoginForm()
     return render(request, 'fifa/login.html', {'form': form})
@@ -44,6 +44,8 @@ def register(request):
             player.save()
             url = reverse('Fifa.views.login_view')
             return HttpResponseRedirect(url)
+        else:
+            return render(request, 'Fifa/register.html', {'form': form})
 
     form = RegistrationForm()
     return render(request, 'Fifa/register.html', {'form': form})
@@ -60,7 +62,7 @@ def administration(request):
     leagues = League.objects.all()
     data = {'leagues': leagues}
     c = RequestContext(request, data)
-    return render_to_response('fifa/administration.html', c)
+    return render_to_response('Fifa/administration.html', c)
 
 
 @staff_member_required
