@@ -17,12 +17,12 @@
                             </a>
                         </li>
                         <li>
-                            <a href="morris.html">
+                            <a href="{% url 'Fifa.views.admin_players' %}">
                                 <i class="fa fa-users fa-fw"></i> DCCan@s
                             </a>
                         </li>
                         <li>
-                            <a href="morris.html">
+                            <a href="{% url 'Fifa.views.admin_weeks' %}">
                                 <i class="fa fa-calendar fa-fw"></i>Semanas
                             </a>
                         </li>
@@ -36,16 +36,22 @@
                         <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level">
-                        <li>
-                            <a href="morris.html">Tabla de Posiciones</a>
-                        </li>
-                        <li>
-                            <a href="morris.html">Partidos</a>
-                        </li>
+                        {% if league.registration %}
+                            <li>
+                                <a href="morris.html">Inscribete</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="morris.html">Tabla de Posiciones</a>
+                            </li>
+                            <li>
+                                <a href="morris.html">Partidos</a>
+                            </li>
+                        {% endif %}
                         {% if user.is_staff %}
                             <li>
-                            <a href="{% url 'Fifa.views.edit_league' league.id%}">Administrar</a>
-                        </li>
+                                <a href="{% url 'Fifa.views.edit_league' league.id%}">Administrar</a>
+                            </li>
                         {% endif %}
                     </ul>
                     <!-- /.nav-second-level -->

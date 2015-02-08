@@ -20,8 +20,65 @@
 
 {% block content %}
     <div id="page-wrapper">
-        <div class="row">
-            Contenido
+        <div class="panel-body col-lg-9">
+            <div class="row">
+                <legend>Partidos de esta semana</legend>
+                {% for rival, score, result in matches_week %}
+                    <div class="col-lg-3 col-md-4">
+                        <div class="panel {{ result }}">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        VS {{ rival }}
+                                    </div>
+                                    <div class="col-xs-6 visible-xs">
+                                        {{ score }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body hidden-xs">
+                                <div class="row text-center">
+                                    <div class="huge">
+                                        {% ifequal score '' %}
+                                            <i class="fa fa-spin fa-futbol-o"></i>
+                                        {% else %}
+                                            {{ score }}
+                                        {% endifequal %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <legend>Partidos pendientes</legend>
+                {% for rival in late %}
+                    <div class="col-lg-3 col-md-4">
+                        <div class="panel panel-realdanger">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        VS {{ rival }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body hidden-xs">
+                                <div class="row text-center">
+                                    <div class="huge">
+                                        <i class="fa fa-spin fa-futbol-o"></i>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <legend>Ultimos resultados</legend>
+            </div>
         </div>
     </div>
 {% endblock %}

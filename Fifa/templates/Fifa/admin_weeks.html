@@ -1,0 +1,75 @@
+{% extends "Fifa/base.html" %}
+{% load staticfiles %}
+
+{% block script %}
+    <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block mobile %}
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'Fifa/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="panel-body">
+            <div>
+                <form class="form-horizontal" action="" method="post">
+                    {% csrf_token %}
+                    {{ forms.management_form }}
+                    {% for form in forms %}
+                        {{ form.id }}
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4">
+                                <div class="form-group">
+                                    {{ form.number.errors }}
+                                    <label class="col-sm-2 col-md-4 control-label">{{ form.number.label }}:</label>
+                                    <div class="col-sm-10 col-md-8">
+                                        {{ form.number }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-4">
+                                <div class="form-group">
+                                    {{ form.start.errors }}
+                                    <label class="col-sm-2 col-md-4 control-label">{{ form.start.label }}:</label>
+                                    <div class="col-sm-10 col-md-8">
+                                        {{ form.start }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-4">
+                                <div class="form-group">
+                                    {{ form.finish.errors }}
+                                    <label class="col-sm-2 col-md-4 control-label">{{ form.finish.label }}:</label>
+                                    <div class="col-sm-10 col-md-8">
+                                        {{ form.finish }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <div class="col-sm-2 col-md-4"></div>
+                                <div class="col-sm-10 col-md-8">
+                                    <button type="submit" class="btn btn-primary">Realizar Cambios</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

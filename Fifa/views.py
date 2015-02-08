@@ -1,14 +1,17 @@
+from datetime import datetime, timedelta
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
-from django.forms import formset_factory
+from django.db.models import Q
+from django.forms import formset_factory, modelformset_factory
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from math import floor
-from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionDates
+from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionDates, EditPlayerForm, \
+    WeekForm
 from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, LeaguePlayer, Team, Week
 from Fix.Fixture import Fixture
 
@@ -116,7 +119,7 @@ def edit_league(request, league_id):
                 start_week = form_dates.cleaned_data['start_week']
                 generate_match(league,form_dates.cleaned_data['matches_per_week'], start_week)
 
-                url = reverse('Fifa.views.edit_league')
+                url = reverse('Fifa.views.edit_league', kwargs={'league_id': league_id})
                 return HttpResponseRedirect(url)
 
         forms = TeamSelectionSet(initial=initial_data)
@@ -154,7 +157,7 @@ def edit_league(request, league_id):
                 'leagues': leagues,
                 'fecha': matches.object_list[0].round}
         return render(request, 'fifa/league_details.html', data)
-        # return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
+
 
 @staff_member_required
 def end_league(request, league_id):
@@ -163,22 +166,55 @@ def end_league(request, league_id):
     league.save()
     return edit_league(request, league_id)
 
+@staff_member_required
+def admin_players(request):
+    leagues = League.objects.all()
+    players = Player.objects.all()
+    data = {'leagues': leagues,
+            'players': players}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/admin_players.html', c)
 
 
+@staff_member_required
+def edit_player(request, player_id):
+    leagues = League.objects.all()
+    player = get_object_or_404(Player, pk=player_id)
+    if request.POST:
+        form = EditPlayerForm(request.POST)
+        if form.is_valid():
+            player.user.first_name = form.cleaned_data['first_name']
+            player.user.last_name = form.cleaned_data['last_name']
+            player.user.email = form.cleaned_data['email']
+            player.twitter_account = form.cleaned_data['twitter']
+            player.user.is_active = form.cleaned_data['is_active']
+            player.user.save()
+            player.save()
 
-# def new_player(request, league_id):
-#     league = get_object_or_404(League, id=league_id)
-#     if request.POST:
-#         form = PlayerForm(request.POST)
-#         if form.is_valid():
-#             player = form.save(commit=False)
-#             player.league = league
-#             player.save()
-#
-#             return HttpResponseRedirect('/')
-#     else:
-#         form = PlayerForm()
-#     return render(request, 'fifa/player_form.html', {'form': form, 'league': league})
+    data = {'leagues': leagues,
+            'player': player,
+            'form': EditPlayerForm(initial={'player': player})}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/edit_players.html', c)
+
+
+@staff_member_required
+def admin_weeks(request):
+    leagues = League.objects.all()
+    weeks = Week.objects.all()
+    WeekFormSet = modelformset_factory(Week, form=WeekForm)
+    if request.POST:
+        forms = WeekFormSet(request.POST)
+        if forms.is_valid():
+            forms.save()
+
+
+    forms = WeekFormSet()
+    data = {'leagues': leagues,
+            'forms': forms}
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/admin_weeks.html', c)
+
 
 
 def generate_match(league, matches_per_week, start_week):
@@ -300,6 +336,8 @@ def set_result(request, match_id):
         visit = int(request.POST.get("visit", ""))
         match.local_score = local
         match.visit_score = visit
+        match.played = True
+        match.played_date = datetime.now()
         match.save()
 
         # Wins, Losses, Draws and Points
@@ -390,6 +428,57 @@ def league_list(request):
 @login_required()
 def inicio(request):
     leagues = League.objects.all()
-    data = {'leagues': leagues}
+    player = Player.objects.get(user=request.user)
+    date = datetime.today() + timedelta(days=4)
+    week = Week.objects.get(Q(start__lt=date) & Q(finish__gt=date))
+    week_matches = Match.objects.filter((Q(visit=player) | Q(local=player)) & Q(week=week))
+    late_matches = Match.objects.filter((Q(visit=player) | Q(local=player)) & Q(week__lt=week) & Q(played=False))
+    matches = []
+    for match in week_matches:
+        if player == match.local:
+            rival = match.visit
+            score = ""
+            if match.played:
+                score = str(match.local_score) + ' - ' + str(match.visit_score)
+
+            if not match.played:
+                result = 'panel-info'
+            elif match.local_score > match.visit_score:
+                result = 'panel-success'
+            elif match.local_score < match.visit_score:
+                result = 'panel-danger'
+            else:
+                result = 'panel-warning'
+        else:
+            rival = match.local
+            score = ""
+            if match.played:
+                score = str(match.visit_score) + ' - ' + str(match.local_score)
+
+            if not match.played:
+                result = 'panel-info'
+            elif match.local_score < match.visit_score:
+                result = 'panel-success'
+            elif match.local_score > match.visit_score:
+                result = 'panel-danger'
+            else:
+                result = 'panel-warning'
+
+        match_data = [rival, score, result]
+        matches += [match_data]
+
+    late = []
+    for match in late_matches:
+        if player == match.local:
+            rival = match.visit
+        else:
+            rival = match.local
+
+        late += [rival]
+
+    data = {'leagues': leagues,
+            'matches_week': matches,
+            'late': late
+            }
     c = RequestContext(request, data)
     return render_to_response('Fifa/inicio.html', c)

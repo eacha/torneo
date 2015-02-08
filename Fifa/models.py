@@ -5,9 +5,6 @@ from django.conf import settings
 class Player(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     twitter_account = models.CharField(max_length=15)
-    # name = models.CharField(max_length=100)
-    # team = models.CharField(max_length=100)
-    # league = models.ForeignKey(League)
 
     def __unicode__(self):
         return self.user.first_name
@@ -15,7 +12,6 @@ class Player(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
-    stars = models.DecimalField(max_digits=2, decimal_places=1)
 
     def __unicode__(self):
         return self.name
@@ -44,7 +40,7 @@ class LeaguePlayer(models.Model):
     team = models.ForeignKey(Team, null=True)
 
     def __unicode__(self):
-        return self.player.user.name + '-' + self.league.name
+        return self.player.user.first_name + '-' + self.league.name
 
 
 class Week(models.Model):
@@ -67,9 +63,11 @@ class Match(models.Model):
     week = models.ForeignKey(Week)
     local_score = models.IntegerField()
     visit_score = models.IntegerField()
+    played = models.BooleanField(default=False)
+    played_date = models.DateTimeField(null=True)
 
     def __unicode__(self):
-        return self.local.__unicode__() + " - " + self.visit.__unicode__()
+        return self.league.__unicode__() + ": " + self.local.__unicode__() + " - " + self.visit.__unicode__()
 
 
 class PositionTable(models.Model):

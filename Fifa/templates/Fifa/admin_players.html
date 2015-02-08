@@ -1,0 +1,59 @@
+{% extends "Fifa/base.html" %}
+{% load staticfiles %}
+
+{% block script %}
+    <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block mobile %}
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'Fifa/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="panel-body">
+                    <div class="table-responsive  ">
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Administrar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for player in players %}
+                                <tr>
+                                    <td>{{ player }}</td>
+                                    {% if player.user.is_active %}
+                                        <td>Activo</td>
+                                    {% else %}
+                                        <td>No Activo</td>
+                                    {% endif %}
+                                    <td>
+                                        <a href="{% url 'Fifa.views.edit_player' player.id %}">
+                                            <i class="fa fa-arrow-right fa-2x" style="color: #00ae00"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

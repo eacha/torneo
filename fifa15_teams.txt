@@ -1,0 +1,96 @@
+Arsenal
+Manchester Utd
+Aston Villa
+Newcastle Utd
+Burnley
+QPR
+Chelsea
+Southampton
+Crystal Palace
+Spurs
+Everton
+Stoke City
+Hull City
+Sunderland
+Leicester City
+Swansea City
+Liverpool
+West Brom
+Manchester City
+West Ham
+1. FC Köln
+FC Schalke 04
+1. FSV Mainz 05
+Hamburger SV
+1899 Hoffenheim
+Hannover 96
+Bayer 04
+Hertha BSC
+Bor. Dortmund
+SC Freiburg
+Bor. M'gladbach
+SC Paderborn
+Eint. Frankfurt
+VfB Stuttgart
+FC Augsburg
+VfL Wolfsburg
+FC Bayern
+Werder Bremen
+Atalanta
+Lazio
+Cagliari
+Milan
+Cesena
+Napoli
+Chievo Verona
+Palermo
+Empoli
+Parma
+Fiorentina
+Roma
+Genoa
+Sampdoria
+Hellas Verona
+Sassuolo
+Inter
+Torino
+Juventus
+Udinese
+Athletic Bilbao
+Rayo Vallecano
+Atlético Madrid
+RC Deportivo
+Celta Vigo
+RCD Espanyol
+Córdoba CF
+Real Madrid
+Elche CF
+Real Sociedad
+FC Barcelona
+SD Eibar
+Getafe CF
+Sevilla FC
+Granada CF
+UD Almería
+Levante UD
+Valencia CF
+Málaga CF
+Villarreal CF
+AC Barnechea
+Depor. Iquique
+Audax Italiano
+Ñublense
+CD Antofagasta
+San Marcos
+CD Cobreloa
+Uni. Católica
+CD Cobresal
+Uni. Concepción
+CD Huachipato
+Uni. de Chile
+CD O'Higgins
+Unión Española
+CD Palestino
+Unión La Calera
+Colo-Colo
+Wanderers

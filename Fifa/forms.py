@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm, Form
+from django.forms import ModelForm, Form, DateInput, NumberInput
 from Fifa.models import League, Player, Week
 from django.utils.translation import ugettext, ugettext_lazy as _
 
@@ -10,7 +10,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required = True)
     twitter = forms.CharField(required=False)
-    first_name = forms.CharField(required=True)
+    first_name = forms.CharField(label=_('first name').title(), max_length=30, required=True)
     password1 = forms.CharField(label=_("Password"),
                                 widget=forms.PasswordInput,
                                 help_text=_("At least 6 characters."))
@@ -32,6 +32,41 @@ class RegistrationForm(UserCreationForm):
         if len(password) < 6:
             raise ValidationError('Password too short')
         return super(RegistrationForm, self).clean_password2()
+
+
+class EditPlayerForm(Form):
+    first_name = forms.CharField(label=_('first name').title(), max_length=30)
+    last_name = forms.CharField(label=_('last name').title(), max_length=30, required=False)
+    email = forms.EmailField()
+    twitter = forms.CharField(required=False)
+    is_active = forms.BooleanField(label=_('active').title(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        player = initial.get('player', None)
+        super(EditPlayerForm, self).__init__(*args, **kwargs)
+
+        if player:
+            self.fields['first_name'].initial = player
+            self.fields['last_name'].initial = player.user.last_name
+            self.fields['email'].initial = player.user.email
+            self.fields['twitter'].initial = player.twitter_account
+            self.fields['is_active'].initial = player.user.is_active
+
+        self.fields['first_name'].widget.attrs = {'class': 'form-control'}
+        self.fields['last_name'].widget.attrs = {'class': 'form-control'}
+        self.fields['email'].widget.attrs = {'class': 'form-control'}
+        self.fields['twitter'].widget.attrs = {'class': 'form-control'}
+
+
+class WeekForm(ModelForm):
+    number = forms.IntegerField(widget=NumberInput(attrs={'class': 'form-control'}))
+    start = forms.DateField(widget=DateInput(attrs={'class': 'form-control'}))
+    finish = forms.DateField(widget=DateInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Week
+        fields = ['number', 'start', 'finish']
 
 
 class ResetPasswordForm(SetPasswordForm):

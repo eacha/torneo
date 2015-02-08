@@ -5,7 +5,7 @@
         {% else %}
             <td>{{ match.local }}</td>
         {% endif %}
-        {% ifequal match.local_score -1 %}
+        {% if not match.played %}
             {% if user.is_superuser and league.playing %}
                 <td id="{{ match.id }}" class="text-center">
                     <a href="#"
@@ -31,7 +31,7 @@
             {% else %}
                 <td class="text-center">{{ match.local_score }} - {{ match.visit_score }}</td>
             {% endif %}
-        {% endifequal %}
+        {% endif %}
         {% if  match.local_score < match.visit_score %}
             <td class="success">{{ match.visit }}</td>
         {% else %}
