@@ -26,6 +26,10 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ADMINS = (
+    ('Milenko Tomic', 'miletomc@gmail.com')
+)
+
 
 # Application definition
 
@@ -107,9 +111,10 @@ STATICFILES_FINDERS = (
 
 LOGIN_URL = '/fifa/login'
 
-if DEBUG:
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_USER = ''
-    EMAIL_HOST_PASSWORD = ''
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'torneosdcc'
+EMAIL_HOST_PASSWORD = 'TorneosDCC0702'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'no-reply@torneosdcc.cl'
