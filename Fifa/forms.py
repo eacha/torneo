@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm, Form, DateInput, NumberInput
-from Fifa.models import League, Player, Week
+from Fifa.models import League, Player, Week, Team
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 
@@ -96,7 +96,7 @@ class LeagueForm(ModelForm):
 
 class TeamSelection(Form):
     CHOICES = (('0', 'Elegir equipo'),)
-    selected_team = forms.ChoiceField(choices=CHOICES)
+    selected_team = forms.ChoiceField(choices=CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         initial = kwargs.get('initial', {})
@@ -107,5 +107,17 @@ class TeamSelection(Form):
 
 
 class TeamSelectionDates(Form):
-    matches_per_week = forms.IntegerField()
-    start_week = forms.ModelChoiceField(queryset=Week.objects.all())
+    matches_per_week = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    start_week = forms.ModelChoiceField(queryset=Week.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+
+
+class InscriptionForm(Form):
+    team1 = forms.ModelChoiceField(queryset=Team.objects.all().order_by('name'),
+                                   widget=forms.Select(attrs={'class': 'form-control'}),
+                                   label='Equipo 1')
+    team2 = forms.ModelChoiceField(queryset=Team.objects.all().order_by('name'),
+                                   widget=forms.Select(attrs={'class': 'form-control'}),
+                                   label='Equipo 2')
+    team3 = forms.ModelChoiceField(queryset=Team.objects.all().order_by('name'),
+                                   widget=forms.Select(attrs={'class': 'form-control'}),
+                                   label='Equipo 3')

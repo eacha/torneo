@@ -19,11 +19,14 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="">
-        {% csrf_token %}
-        <div id="page-wrapper">
-            <h2>Torneo {{ league.name }}</h2>
+    <div id="page-wrapper">
+
+        <form method="post" action="">
+            {% csrf_token %}
             <div class="row">
+                <p></p>
+                <legend>Torneo {{ league.name }}</legend>
+
                 <div class="col-lg-9">
                     <div class="panel-body">
                         <div class="table-responsive table-bordered">
@@ -31,9 +34,9 @@
                                 <thead>
                                 <tr>
                                     <th>Jugador</th>
-                                    <th class="hidden-xs">Equipo 1</th>
-                                    <th class="hidden-xs">Equipo 2</th>
-                                    <th class="hidden-xs">Equipo 3</th>
+                                    <th class="hidden-xs hidden-sm">Equipo 1</th>
+                                    <th class="hidden-xs hidden-sm">Equipo 2</th>
+                                    <th class="hidden-xs hidden-sm">Equipo 3</th>
                                     <th>Equipo Seleccionado</th>
                                 </tr>
                                 </thead>
@@ -42,9 +45,9 @@
                                 {% for player, form in data %}
                                     <tr>
                                         <td>{{ player.player.user.first_name }}</td>
-                                        <td class="hidden-xs">{{ player.team1 }}</td>
-                                        <td class="hidden-xs">{{ player.team2 }}</td>
-                                        <td class="hidden-xs">{{ player.team3 }}</td>
+                                        <td class="hidden-xs hidden-sm">{{ player.team1 }}</td>
+                                        <td class="hidden-xs hidden-sm">{{ player.team2 }}</td>
+                                        <td class="hidden-xs hidden-sm">{{ player.team3 }}</td>
                                         <td>{{ form.selected_team }}</td>
                                     </tr>
                                 {% endfor %}
@@ -54,12 +57,21 @@
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <div class="panel-body">
-                        <label> Partidos por semana</label>
-                        {{ form_dates.matches_per_week }}
-                        <br>
-                        <label> Semana de inicio</label>
-                        {{ form_dates.start_week }}
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-6 col-md-4 col-lg-8 control-label">Partidos por semana:</label>
+                            <div class="col-sm-4 col-md-4 col-lg-4">
+                                {{ form_dates.matches_per_week }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-6 col-md-4 col-lg-8 control-label">Semana de inicio:</label>
+                            <div class="col-sm-4 col-md-4 col-lg-4">
+                                {{ form_dates.start_week }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,7 +82,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
 
+        </form>
+    </div>
 {% endblock %}

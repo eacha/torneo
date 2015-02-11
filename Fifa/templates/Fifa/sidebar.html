@@ -38,14 +38,14 @@
                     <ul class="nav nav-second-level">
                         {% if league.registration %}
                             <li>
-                                <a href="morris.html">Inscribete</a>
+                                <a href="{% url 'Fifa.views.inscription' league.id %}">Inscribete</a>
                             </li>
                         {% else %}
                             <li>
                                 <a href="morris.html">Tabla de Posiciones</a>
                             </li>
                             <li>
-                                <a href="morris.html">Partidos</a>
+                                <a href="{% url 'Fifa.views.league_details_matches' league.id %}">Partidos</a>
                             </li>
                         {% endif %}
                         {% if user.is_staff %}

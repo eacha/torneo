@@ -24,11 +24,11 @@
             <div class="row">
                 <legend>Partidos de esta semana</legend>
                 {% for rival, score, result in matches_week %}
-                    <div class="col-lg-3 col-md-4">
+                    <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="panel {{ result }}">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-6 col-sm-12 col-md-12 col-lg-12">
                                         VS {{ rival }}
                                     </div>
                                     <div class="col-xs-6 visible-xs">
@@ -54,11 +54,11 @@
             <div class="row">
                 <legend>Partidos pendientes</legend>
                 {% for rival in late %}
-                    <div class="col-lg-3 col-md-4">
+                    <div class="col-lg-3 col-md-4 col-sm-6">
                         <div class="panel panel-realdanger">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-6 col-sm-12 col-md-12 col-lg-12">
                                         VS {{ rival }}
                                     </div>
                                 </div>
@@ -67,8 +67,6 @@
                                 <div class="row text-center">
                                     <div class="huge">
                                         <i class="fa fa-spin fa-futbol-o"></i>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -78,6 +76,29 @@
             </div>
             <div class="row">
                 <legend>Ultimos resultados</legend>
+                {% for match in recents %}
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-8 col-sm-12 col-md-12 col-lg-12">
+                                       {{ match.local }} VS {{ match.visit }}
+                                    </div>
+                                    <div class="col-xs-4 visible-xs">
+                                        {{ match.local_score }} - {{ match.visit_score }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body hidden-xs">
+                                <div class="row text-center">
+                                    <div class="huge">
+                                        {{ match.local_score }} - {{ match.visit_score }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>

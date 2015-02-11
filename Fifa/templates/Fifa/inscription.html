@@ -1,0 +1,69 @@
+{% extends "Fifa/base.html" %}
+{% load staticfiles %}
+
+{% block script %}
+    <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block mobile %}
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'Fifa/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="panel-body col-lg-9">
+            <legend>Inscripción {{ league }}</legend>
+            {% if previous %}
+                <div class="alert alert-warning">
+                    Ya has realizado tu inscripción. Si realizas algún cambio y vuelves a enviarla, esta se verá modificada.
+                </div>
+            {% endif %}
+            {% if ok %}
+                <div class="alert alert-success">
+                    Tu inscripción se ha realizado con éxito. Puedes modificarla en cualquier momento.
+                </div>
+            {% endif %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            {{ form.team1.errors }}
+                            <label class="control-label">{{ form.team1.label }}:</label>
+                            {{ form.team1 }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            {{ form.team2.errors }}
+                            <label class="control-label">{{ form.team2.label }}:</label>
+                            {{ form.team2 }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            {{ form.team3.errors }}
+                            <label class="control-label">{{ form.team3.label }}:</label>
+                            {{ form.team3 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <button class="btn btn-primary" type="submit">Enviar inscripción</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

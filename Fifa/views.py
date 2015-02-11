@@ -11,7 +11,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from math import floor
 from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionDates, EditPlayerForm, \
-    WeekForm
+    WeekForm, InscriptionForm
 from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, LeaguePlayer, Team, Week
 from Fix.Fixture import Fixture
 
@@ -156,7 +156,7 @@ def edit_league(request, league_id):
                 'matches': matches,
                 'leagues': leagues,
                 'fecha': matches.object_list[0].round}
-        return render(request, 'fifa/league_details.html', data)
+        return render(request, 'fifa/edit_league_playing.html', data)
 
 
 @staff_member_required
@@ -216,7 +216,6 @@ def admin_weeks(request):
     return render_to_response('Fifa/admin_weeks.html', c)
 
 
-
 def generate_match(league, matches_per_week, start_week):
     if league.registration:
         players = league.players.all()
@@ -252,42 +251,8 @@ def generate_match(league, matches_per_week, start_week):
         league.total_matches = matches
         league.save()
 
-
-
-def index(request):
-    leagues = League.objects.filter(start=True)
-    if leagues is not None:
-        tables = []
-        matches = []
-        for league in leagues:
-            table = PositionTable.objects.filter(league=league)
-            tables.append(table)
-        return render(request, 'fifa/index.html', {'leagues': leagues, 'tables': tables})
-    return render(request, 'fifa/index.html')
-
-
-def league_details(request, league_id):
-    league = get_object_or_404(League, id=league_id)
-    players = Player.objects.filter(league=league)
-    if league.start:
-        matches = Match.objects.filter(league=league).order_by('week')
-        leagues = League.objects.all()
-        data = {'league': league,
-                'players': players,
-                'matches': matches,
-                'leagues': leagues}
-        return render(request, 'fifa/league_details.html', data)
-    return render(request, 'fifa/league_details.html', {'league': league, 'players': players})
-
-
-def finish_registration(request, league_id):
-    league = get_object_or_404(League, id=league_id)
-    league.registration = False
-    league.save()
-    return HttpResponseRedirect(reverse('league_details', args=(league.id,)))
-
-
 def set_result(request, match_id):
+    print request.user.is_superuser
     if request.POST:
         # Setting the match result
         match = get_object_or_404(Match, id=match_id)
@@ -392,47 +357,23 @@ def set_result(request, match_id):
             # If page is out of range (e.g. 9999), deliver last page of results.
             matches = paginator.page(paginator.num_pages)
 
-        data = {'matches': matches}
+        data = {'matches': matches,
+                'league': league}
         c = RequestContext(request, data)
         return render_to_response('Fifa/matches.html', c)
     return HttpResponse(status=404)
 
 
-
-
-
-
-
-
-
-
-
-def league_list(request):
-    leagues = League.objects.all().order_by('-id')
-    paginator = Paginator(leagues, 10)
-
-    page = request.GET.get('page')
-    try:
-        list = paginator.page(page)
-    except PageNotAnInteger:
-        list = paginator.page(1)
-    except EmptyPage:
-        list = paginator.page(paginator.num_pages)
-
-    return render(request, 'fifa/league_list.html', {'leagues': list})
-
-
-
-
-
 @login_required()
-def inicio(request):
+def index(request):
     leagues = League.objects.all()
     player = Player.objects.get(user=request.user)
-    date = datetime.today() + timedelta(days=4)
+    date = datetime.today() + timedelta(days=10)
     week = Week.objects.get(Q(start__lt=date) & Q(finish__gt=date))
     week_matches = Match.objects.filter((Q(visit=player) | Q(local=player)) & Q(week=week))
     late_matches = Match.objects.filter((Q(visit=player) | Q(local=player)) & Q(week__lt=week) & Q(played=False))
+    recent_matches = Match.objects.filter(played=True).order_by('-played_date')[0:4]
+
     matches = []
     for match in week_matches:
         if player == match.local:
@@ -451,12 +392,13 @@ def inicio(request):
                 result = 'panel-warning'
         else:
             rival = match.local
+
             score = ""
             if match.played:
                 score = str(match.visit_score) + ' - ' + str(match.local_score)
 
             if not match.played:
-                result = 'panel-info'
+                result = 'panel-default'
             elif match.local_score < match.visit_score:
                 result = 'panel-success'
             elif match.local_score > match.visit_score:
@@ -478,7 +420,100 @@ def inicio(request):
 
     data = {'leagues': leagues,
             'matches_week': matches,
-            'late': late
-            }
+            'late': late,
+            'recents': recent_matches
+    }
     c = RequestContext(request, data)
     return render_to_response('Fifa/inicio.html', c)
+
+
+@login_required
+def inscription(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    player = Player.objects.get(user=request.user)
+    if request.POST:
+        form = InscriptionForm(request.POST)
+        if form.is_valid():
+            try:
+                registration = RegistrationLeague.objects.get(player=player, league=league)
+            except RegistrationLeague.DoesNotExist:
+                registration = RegistrationLeague()
+
+            registration.league = league
+            registration.player = player
+            registration.team1 = form.cleaned_data['team1']
+            registration.team2 = form.cleaned_data['team2']
+            registration.team3 = form.cleaned_data['team3']
+            registration.save()
+
+            leagues = League.objects.all()
+            data = {'leagues': leagues,
+                    'league': league,
+                    'form': form,
+                    'ok': True
+            }
+            c = RequestContext(request, data)
+            return render_to_response('Fifa/inscription.html', c)
+
+    try:
+        pre = RegistrationLeague.objects.get(player=player, league=league)
+        form = InscriptionForm(initial = {'team1': pre.team1.pk,
+                                          'team2': pre.team2.pk,
+                                          'team3': pre.team3.pk})
+        previous = True
+    except RegistrationLeague.DoesNotExist:
+        form = InscriptionForm()
+        previous = False
+
+    leagues = League.objects.all()
+    data = {'leagues': leagues,
+            'league': league,
+            'form': form,
+            'previous': previous
+    }
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/inscription.html', c)
+
+
+def league_details(request, league_id):
+    league = get_object_or_404(League, id=league_id)
+    players = LeaguePlayer.objects.filter(league=league)
+    position_table = PositionTable.objects.filter(league=league)
+    # if league.playing:
+    leagues = League.objects.all()
+    matches = Match.objects.filter(league=league).order_by('week')
+    matches_per_week = floor(league.players.count() / 2)
+
+    paginator = Paginator(matches, matches_per_week)
+    page = request.GET.get('page')
+    try:
+        matches = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        matches = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        matches = paginator.page(paginator.num_pages)
+
+    data = {'league': league,
+            'players': players,
+            'matches': matches,
+            'leagues': leagues,
+            'fecha': matches.object_list[0].round,
+            'position_table': position_table}
+    # return render(request, 'fifa/edit_league_playing.html', data)
+    return data
+
+@login_required
+def league_details_matches(request, league_id):
+    data = league_details(request, league_id)
+    # data['matches_page'] = True
+    print data
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/league_details.html', c)
+
+
+@login_required
+def league_details_positions(request, league_id):
+    pass
+

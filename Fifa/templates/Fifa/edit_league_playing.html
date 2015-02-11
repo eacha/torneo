@@ -1,9 +1,10 @@
 {% extends "Fifa/base.html" %}
-{#{% load bootstrap3 %}#}
+{% load bootstrap3 %}
 {% load staticfiles %}
 
 {% block script %}
     <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">
+
     <script src="{% static 'Fifa/js/jquery.js' %}"></script>
     <script type="text/javascript">
         $(function () { $('#matchModal').on('show.bs.modal', function (event){
@@ -50,7 +51,6 @@
         {#        });});#}
 
     </script>
-
 {% endblock %}
 
 {% block mobile %}
@@ -70,64 +70,21 @@
 {% block content %}
 
     <div id="page-wrapper">
-        <div class="panel-body">
-            <legend>Torneo {{ league.name }}</legend>
+        <legend>Torneo {{ league.name }}</legend>
 
-            <div class="row">
-                <div class="content">
-                    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <div class="row">
+            <div class="content">
+                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                    <li class="active"><a href="#partidos" data-toggle="tab">Partidos</a></li>
+                    <li><a href="#jugadores" data-toggle="tab">Jugadores</a></li>
+                    <li><a href="#administrar" data-toggle="tab">Administrar</a></li>
+                </ul>
+            </div>
 
-                        <li class="active"><a href="#jugadores" data-toggle="tab">Jugadores</a></li>
-                        <li><a href="#partidos" data-toggle="tab">Partidos</a></li>
-                        {#                    <li><a href="#administrar" data-toggle="tab">Administrar</a></li>#}
-                    </ul>
-                </div>
-
-                <div class="col-lg-9 tab-content">
-
-                    <!-- Jugadores -->
-                    <div id="jugadores" class="tab-pane row fade collapse active in">
-                        <h3>Jugadores</h3>
-                        <hr/>
-                        <table class="table table-hover table-striped table-condensed">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>PJ</th>
-                                <th>PG</th>
-                                <th>PE</th>
-                                <th>PP</th>
-                                <th>GF</th>
-                                <th>GC</th>
-                                <th>Diff</th>
-                                <th>Puntos</th>
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for player in position_table  %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ player.player }}</td>
-                                    <td>{{ player.played}}</td>
-                                    <td>{{ player.wins}}</td>
-                                    <td>{{ player.draws}}</td>
-                                    <td>{{ player.losses}}</td>
-                                    <td>{{ player.forGoal}}</td>
-                                    <td>{{ player.againstGoal}}</td>
-                                    <td>{{ player.goalDifference}}</td>
-                                    <td>{{ player.points}}</td>
-                                </tr>
-                            {% endfor %}
-
-                            </tbody>
-                        </table>
-                    </div>
-
+            <div class="col-lg-9 tab-content">
+                <div class="panel-body">
                     <!-- Partidos -->
-                    <div id="partidos" class="tab-pane row fade">
+                    <div id="partidos" class="tab-pane active row collapse in">
                         <h3>Partidos Fecha {{ fecha }}</h3>
                         <hr/>
                         {% if matches %}
@@ -153,9 +110,58 @@
                             <input class="form-control" type="number"name="page" style="width: 4em;">
                             <button type="submit" class="btn btn-primary">Ir</button>
                         </form>
+
+
                     </div>
+
+                    <!-- Jugadores -->
+                    <div id="jugadores" class="tab-pane row collapse">
+                        <h3>Jugadores</h3>
+                        <hr/>
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Team</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for player in players  %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ player.player.user.first_name }}</td>
+                                    <td>{{ player.team}}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        {% if league.registration %}
+                            <a class="btn btn-default" href="{% url 'new_player' league.id %}">Agregar Jugador</a>
+                        {% endif %}
+                    </div>
+
                     <!-- Administrar -->
                     {% if user.is_superuser %}
+                        <div id="administrar" class="tab-pane row collapse">
+                            <h3>Administrar</h3>
+                            <hr/>
+                            <div class="btn-group btn-group-lg">
+                                {% if league.playing %}
+                                    <a class="btn btn-default"
+                                       href="{% url 'Fifa.views.end_league' league.id %}">
+                                        Cerrar Torneo
+                                    </a>
+                                {% else %}
+                                    <a class="btn btn-default disabled"
+                                       href="{% url 'Fifa.views.end_league' league.id %}">
+                                        Cerrar Torneo
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
                         <!-- Modal -->
                         <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -193,9 +199,9 @@
                         </div>
                     {% endif %}
 
-
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}
