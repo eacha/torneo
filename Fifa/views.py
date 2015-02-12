@@ -14,6 +14,7 @@ from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, T
     WeekForm, InscriptionForm
 from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, LeaguePlayer, Team, Week
 from Fix.Fixture import Fixture
+from twitter import *
 
 
 def login_view(request):
@@ -311,15 +312,19 @@ def set_result(request, match_id):
         match.save()
 
         # Wins, Losses, Draws and Points
+        score_status = player1.player.get_twitter() + " " + str(local) + " - " + str(visit) + " " + player2.player.get_twitter()
         if local > visit:
+            status = "(Ganador) "+ score_status
             player1.wins += 1
             player2.losses += 1
             player1.points += 3
         elif local < visit:
+            status = score_status + " (Ganador)"
             player1.losses += 1
             player2.wins += 1
             player2.points += 3
         else:
+            status = "(Empate) "+ score_status
             player1.draws += 1
             player2.draws += 1
             player1.points += 1
@@ -361,6 +366,14 @@ def set_result(request, match_id):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             matches = paginator.page(paginator.num_pages)
+
+        t = Twitter(auth=OAuth('2732489042-jvsiUfgFYEexZMZfJyRFPOZn6jAFkBiyG0IY74h',
+                               'dnoamToabjrI9BgYk13fhpVFlV7FlFcM8f3SecdYgeie8',
+                               'sFQwiZDr1wWl6t7m4AXdk1ocu',
+                               'uC0L8JeMH0g0B0aqOsX9bs8y5QguuiPJz18YqgCHawDTub0hmE'))
+
+        # t.statuses.update(status=status)
+        t.statuses.update(status="Tuit de prueba, @milenkotomic")
 
         data = {'matches': matches,
                 'league': league}

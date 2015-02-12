@@ -9,6 +9,11 @@ class Player(models.Model):
     def __unicode__(self):
         return self.user.first_name
 
+    def get_twitter(self):
+        if self.twitter_account != "":
+            return self.twitter_account
+        return self.__unicode__()
+
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
