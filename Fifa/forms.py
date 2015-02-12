@@ -79,8 +79,10 @@ class ResetPasswordForm(SetPasswordForm):
 
 
 class LoginForm(Form):
-    user = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Nombre de Usuario'}))
-    password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'placeholder': 'Contrasena'}))
+    user = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Usuario',
+                                                                        'class': 'form-control'}))
+    password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'placeholder': 'Contrasena',
+                                                                                'class': 'form-control'}))
 
 
 class LeagueForm(ModelForm):
@@ -106,9 +108,10 @@ class TeamSelection(Form):
             self.fields['selected_team'].choices = choices
 
 
-class TeamSelectionDates(Form):
+class TeamSelectionData(Form):
     matches_per_week = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     start_week = forms.ModelChoiceField(queryset=Week.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    matches_between = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 class InscriptionForm(Form):

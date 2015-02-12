@@ -42,7 +42,7 @@
                             </li>
                         {% else %}
                             <li>
-                                <a href="morris.html">Tabla de Posiciones</a>
+                                <a href="{% url 'Fifa.views.league_details_positions' league.id %}">Tabla de Posiciones</a>
                             </li>
                             <li>
                                 <a href="{% url 'Fifa.views.league_details_matches' league.id %}">Partidos</a>

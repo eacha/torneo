@@ -33,31 +33,26 @@
         {% endblock %}
         <a class="navbar-brand" href="{% url 'Fifa.views.index' %}">Torneos DCC</a>
 
-        <ul class="nav navbar-top-links navbar-right">
+        <ul class="nav navbar-top-links navbar-right hidden-xs hidden-sm">
             {% if not user.is_authenticated %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-sign-in fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu" style="padding:17px;">
+                    <ul class="dropdown-menu" style="padding:12px;">
                         <form method="post" action="{% url 'Fifa.views.login_view' %}">
                             {% csrf_token %}
-                            <li class="form-group">
+                            <div class="form-group">
                                 <label>Nombre de Usuario </label>
                                 {{ form.user }}
-                            </li>
-                            <li class="form-group">
+                            </div>
+                            <div class="form-group">
                                 <label>Contraseña </label>
                                 {{ form.password }}
-                            </li>
-                            <li class="form-group">
-                                <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
-                            </li>
+                            </div>
+                            <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+
                         </form>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="{% url 'password_reset' %}">Constraseña olvidada</a>
-                        </li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -74,41 +69,35 @@
         </ul>
     </div>
     <!-- /.navbar-top-links -->
+    {% block sidebar %} {% endblock %}
 </nav>
 
 
 
 
 <!-- Full Page Image Background Carousel Header -->
-<header id="myCarousel" class="carousel slide">
-    <!-- Indicators -->
-    {#        <ol class="carousel-indicators">#}
-    {#            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>#}
-    {#            <li data-target="#myCarousel" data-slide-to="1"></li>#}
-    {#            <li data-target="#myCarousel" data-slide-to="2"></li>#}
-    {#        </ol>#}
-
+<header id="myCarousel" class="carousel slide hidden-xs hidden-sm">
     <!-- Wrapper for Slides -->
     <div class="carousel-inner">
         <div class="item active">
             <!-- Set the first background image using inline CSS below. -->
             <div class="fill" style="background-image:url({% static 'Fifa/img/cover1.png' %});"></div>
             <div class="carousel-caption">
-                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Inscribete!</a>
+                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Registrate!</a>
             </div>
         </div>
         <div class="item">
             <!-- Set the second background image using inline CSS below. -->
             <div class="fill" style="background-image:url({% static 'Fifa/img/cover2.jpg' %});"></div>
             <div class="carousel-caption">
-                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Inscribete!</a>
+                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Registrate!</a>
             </div>
         </div>
         <div class="item">
             <!-- Set the third background image using inline CSS below. -->
             <div class="fill" style="background-image:url({% static 'Fifa/img/cover3.jpg' %});"></div>
             <div class="carousel-caption">
-                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Inscribete!</a>
+                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Registrate!</a>
             </div>
         </div>
     </div>
@@ -123,6 +112,26 @@
 
 </header>
 
+<div class="container visible-xs visible-sm" style="margin-top: 60px">
+    <img src="{% static 'Fifa/img/cover-xs.png' %}" class="img-responsive img-rounded" alt="Responsive image">
+    <div class="panel-body">
+        <div class="col-sm-offset-3 col-sm-6">
+            <form method="post" action="{% url 'Fifa.views.login_view' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Nombre de Usuario </label>
+                    {{ form.user }}
+                </div>
+                <div class="form-group">
+                    <label>Contraseña </label>
+                    {{ form.password }}
+                </div>
+                <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 <script src="{% static 'Fifa/js/jquery.js' %}"></script>
 <script src="{% static 'Fifa/js/bootstrap.min.js' %}"></script>

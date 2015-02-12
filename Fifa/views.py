@@ -10,7 +10,7 @@ from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from math import floor
-from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionDates, EditPlayerForm, \
+from Fifa.forms import LeagueForm, RegistrationForm, LoginForm, TeamSelection, TeamSelectionData, EditPlayerForm, \
     WeekForm, InscriptionForm
 from Fifa.models import League, Player, Match, PositionTable, RegistrationLeague, LeaguePlayer, Team, Week
 from Fix.Fixture import Fixture
@@ -22,7 +22,7 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                url = reverse('Fifa.views.inicio')
+                url = reverse('Fifa.views.index')
                 return HttpResponseRedirect(url)
 
         form = LoginForm(initial={'user': request.POST['user']})
@@ -55,6 +55,9 @@ def register(request):
 
 
 def cover(request):
+    if request.user.is_authenticated():
+        return index(request)
+
     data = {'form': LoginForm()}
     c = RequestContext(request, data)
     return render_to_response('Fifa/cover.html', c)
@@ -108,7 +111,7 @@ def edit_league(request, league_id):
 
         if request.POST:
             forms = TeamSelectionSet(request.POST, request.FILES, initial=initial_data)
-            form_dates = TeamSelectionDates(request.POST)
+            form_dates = TeamSelectionData(request.POST)
             if forms.is_valid() and form_dates.is_valid():
                 for form, register in zip(forms, registers):
                     team = Team.objects.get(pk=int(form.cleaned_data['selected_team']))
@@ -117,13 +120,16 @@ def edit_league(request, league_id):
                                                team=team)
                     inscription.save()
                 start_week = form_dates.cleaned_data['start_week']
-                generate_match(league,form_dates.cleaned_data['matches_per_week'], start_week)
+                generate_match(league,
+                               form_dates.cleaned_data['matches_per_week'],
+                               start_week,
+                               form_dates.cleaned_data['matches_between'])
 
                 url = reverse('Fifa.views.edit_league', kwargs={'league_id': league_id})
                 return HttpResponseRedirect(url)
 
         forms = TeamSelectionSet(initial=initial_data)
-        form_dates = TeamSelectionDates()
+        form_dates = TeamSelectionData()
         leagues = League.objects.all()
         data = {'data': zip(registers, forms),
                 'league': league,
@@ -216,7 +222,7 @@ def admin_weeks(request):
     return render_to_response('Fifa/admin_weeks.html', c)
 
 
-def generate_match(league, matches_per_week, start_week):
+def generate_match(league, matches_per_week, start_week, matches_between):
     if league.registration:
         players = league.players.all()
         # Created Position Table
@@ -225,7 +231,7 @@ def generate_match(league, matches_per_week, start_week):
                                      player=player)
             position.save()
         # Created Matchs
-        fix = Fixture(list(players))
+        fix = Fixture(list(players), games=matches_between)
         fixture = fix.generate()
         counter = 1
         week = start_week
@@ -368,10 +374,17 @@ def set_result(request, match_id):
 def index(request):
     leagues = League.objects.all()
     player = Player.objects.get(user=request.user)
-    date = datetime.today() + timedelta(days=10)
+    date = datetime.today()
     week = Week.objects.get(Q(start__lt=date) & Q(finish__gt=date))
-    week_matches = Match.objects.filter((Q(visit=player) | Q(local=player)) & Q(week=week))
-    late_matches = Match.objects.filter((Q(visit=player) | Q(local=player)) & Q(week__lt=week) & Q(played=False))
+
+    week_matches = Match.objects.filter((Q(visit=player) | Q(local=player))
+                                        & Q(week=week)
+                                        & Q(league__playing=True))
+
+    late_matches = Match.objects.filter((Q(visit=player) | Q(local=player))
+                                        & Q(week__lt=week) & Q(played=False)
+                                        & Q(league__playing=True))
+
     recent_matches = Match.objects.filter(played=True).order_by('-played_date')[0:4]
 
     matches = []
@@ -501,19 +514,20 @@ def league_details(request, league_id):
             'leagues': leagues,
             'fecha': matches.object_list[0].round,
             'position_table': position_table}
-    # return render(request, 'fifa/edit_league_playing.html', data)
     return data
 
 @login_required
 def league_details_matches(request, league_id):
     data = league_details(request, league_id)
-    # data['matches_page'] = True
-    print data
+    data['matches_page'] = True
     c = RequestContext(request, data)
     return render_to_response('Fifa/league_details.html', c)
 
 
 @login_required
 def league_details_positions(request, league_id):
-    pass
+    data = league_details(request, league_id)
+    data['positions_page'] = True
+    c = RequestContext(request, data)
+    return render_to_response('Fifa/league_details.html', c)
 

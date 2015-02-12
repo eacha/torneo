@@ -76,58 +76,68 @@
             <div class="row">
                 <div class="content">
                     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                        {% if matches_page %}
+                            <li><a href="#tabla" data-toggle="tab">Jugadores</a></li>
+                            <li class="active"><a href="#partidos" data-toggle="tab">Partidos</a></li>
+                        {% elif positions_page %}
+                            <li class="active"><a href="#tabla" data-toggle="tab">Jugadores</a></li>
+                            <li><a href="#partidos" data-toggle="tab">Partidos</a></li>
+                        {% endif %}
 
-                        <li class="active"><a href="#jugadores" data-toggle="tab">Jugadores</a></li>
-                        <li><a href="#partidos" data-toggle="tab">Partidos</a></li>
-                        {#                    <li><a href="#administrar" data-toggle="tab">Administrar</a></li>#}
                     </ul>
                 </div>
 
                 <div class="col-lg-9 tab-content">
 
                     <!-- Jugadores -->
-                    <div id="jugadores" class="tab-pane row fade collapse active in">
-                        <h3>Jugadores</h3>
-                        <hr/>
-                        <table class="table table-hover table-striped table-condensed">
-                            <thead>
+                    {% if matches_page %}
+                        <div id="tabla" class="tab-pane row fade collapse">
+                    {% elif positions_page %}
+                        <div id="tabla" class="tab-pane row fade collapse active in">
+                    {% endif %}
+                    <h3>Jugadores</h3>
+                    <hr/>
+                    <table class="table table-hover table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>PJ</th>
+                            <th class="hidden-xs">PG</th>
+                            <th class="hidden-xs">PE</th>
+                            <th class="hidden-xs">PP</th>
+                            <th class="hidden-xs">GF</th>
+                            <th class="hidden-xs">GC</th>
+                            <th>Diff</th>
+                            <th>Puntos</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for player in position_table  %}
                             <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>PJ</th>
-                                <th>PG</th>
-                                <th>PE</th>
-                                <th>PP</th>
-                                <th>GF</th>
-                                <th>GC</th>
-                                <th>Diff</th>
-                                <th>Puntos</th>
-
-
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ player.player }}</td>
+                                <td>{{ player.played}}</td>
+                                <td class="hidden-xs">{{ player.wins}}</td>
+                                <td class="hidden-xs">{{ player.draws}}</td>
+                                <td class="hidden-xs">{{ player.losses}}</td>
+                                <td class="hidden-xs">{{ player.forGoal}}</td>
+                                <td class="hidden-xs">{{ player.againstGoal}}</td>
+                                <td>{{ player.goalDifference}}</td>
+                                <td>{{ player.points}}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for player in position_table  %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ player.player }}</td>
-                                    <td>{{ player.played}}</td>
-                                    <td>{{ player.wins}}</td>
-                                    <td>{{ player.draws}}</td>
-                                    <td>{{ player.losses}}</td>
-                                    <td>{{ player.forGoal}}</td>
-                                    <td>{{ player.againstGoal}}</td>
-                                    <td>{{ player.goalDifference}}</td>
-                                    <td>{{ player.points}}</td>
-                                </tr>
-                            {% endfor %}
+                        {% endfor %}
 
-                            </tbody>
-                        </table>
+                        </tbody>
+                    </table>
                     </div>
 
                     <!-- Partidos -->
-                    <div id="partidos" class="tab-pane row fade">
+                    {% if matches_page %}
+                        <div id="partidos" class="tab-pane row fade collapse active in">
+                    {% elif positions_page %}
+                        <div id="partidos" class="tab-pane row fade collapse">
+                    {% endif %}
                         <h3>Partidos Fecha {{ fecha }}</h3>
                         <hr/>
                         {% if matches %}
@@ -194,8 +204,8 @@
                     {% endif %}
 
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 {% endblock %}
