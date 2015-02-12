@@ -257,8 +257,7 @@ def generate_match(league, matches_per_week, start_week, matches_between):
         league.total_matches = matches
         league.save()
 
-def set_result(request, match_id):
-    print request.user.is_superuser
+def set_result(request, match_id):  
     if request.POST:
         # Setting the match result
         match = get_object_or_404(Match, id=match_id)

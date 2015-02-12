@@ -24,7 +24,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.12', 'localhost', '127.0.0.1']
 
 ADMINS = (
     ('Milenko Tomic', 'miletomc@gmail.com')
