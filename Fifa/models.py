@@ -10,8 +10,8 @@ class Player(models.Model):
         return self.user.first_name
 
     def get_twitter(self):
-        if self.twitter_account != "":
-            return self.twitter_account
+        # if self.twitter_account != "":
+        #     return self.twitter_account
         return self.__unicode__()
 
 

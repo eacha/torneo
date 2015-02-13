@@ -30,7 +30,7 @@ def login_view(request):
         return render(request, 'Fifa/login.html', {'form': form, 'fail': True})
     else:
         form = LoginForm()
-    return render(request, 'fifa/login.html', {'form': form})
+    return render(request, 'Fifa/login.html', {'form': form})
 
 
 def logout_view(request):
@@ -92,7 +92,7 @@ def new_league(request):
             return render_to_response('Fifa/admin_leagues.html', c)
 
     form = LeagueForm()
-    return render(request, 'fifa/league_form.html', {'form': form})
+    return render(request, 'Fifa/league_form.html', {'form': form})
 
 
 @staff_member_required
@@ -163,7 +163,7 @@ def edit_league(request, league_id):
                 'matches': matches,
                 'leagues': leagues,
                 'fecha': matches.object_list[0].round}
-        return render(request, 'fifa/edit_league_playing.html', data)
+        return render(request, 'Fifa/edit_league_playing.html', data)
 
 
 @staff_member_required
@@ -372,8 +372,8 @@ def set_result(request, match_id):
                                'sFQwiZDr1wWl6t7m4AXdk1ocu',
                                'uC0L8JeMH0g0B0aqOsX9bs8y5QguuiPJz18YqgCHawDTub0hmE'))
 
-        # t.statuses.update(status=status)
-        t.statuses.update(status="Tuit de prueba, @milenkotomic")
+        t.statuses.update(status=status)
+
 
         data = {'matches': matches,
                 'league': league}
