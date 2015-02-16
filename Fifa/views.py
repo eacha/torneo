@@ -408,7 +408,7 @@ def index(request):
                 score = str(match.local_score) + ' - ' + str(match.visit_score)
 
             if not match.played:
-                result = 'panel-info'
+                result = 'panel-default '
             elif match.local_score > match.visit_score:
                 result = 'panel-success'
             elif match.local_score < match.visit_score:
