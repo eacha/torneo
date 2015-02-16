@@ -387,7 +387,7 @@ def index(request):
     leagues = League.objects.all()
     player = Player.objects.get(user=request.user)
     date = datetime.today()
-    week = Week.objects.get(Q(start__lt=date) & Q(finish__gt=date))
+    week = Week.objects.get(Q(start__lte=date) & Q(finish__gte=date))
 
     week_matches = Match.objects.filter((Q(visit=player) | Q(local=player))
                                         & Q(week=week)
