@@ -10,8 +10,8 @@ class Player(models.Model):
         return self.user.first_name
 
     def get_twitter(self):
-        # if self.twitter_account != "":
-        #     return self.twitter_account
+        if self.twitter_account != "":
+            return self.twitter_account
         return self.__unicode__()
 
 
@@ -103,3 +103,6 @@ class RegistrationLeague(models.Model):
 
     class Meta:
         unique_together = (('player', 'league'),)
+
+    def __unicode__(self):
+        return self.league.__unicode__() + ' - ' + self.player.__unicode__()
