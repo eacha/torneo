@@ -78,6 +78,7 @@ class Match(models.Model):
 class PositionTable(models.Model):
     league = models.ForeignKey(League)
     player = models.ForeignKey(Player)
+    team = models.ForeignKey(Team)
     played = models.IntegerField(default=0)
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)

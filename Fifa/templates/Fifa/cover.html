@@ -50,9 +50,17 @@
                                 <label>Contraseña </label>
                                 {{ form.password }}
                             </div>
-                            <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                            <div class="form-group">
+                                <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <a href="{% url 'password_reset' %}" class="btn btn-primary btn-xs" style="padding: 6px 12px; min-height: 1px">
+                                    Recordar contraseña
+                                </a>
+                            </div>
 
                         </form>
+
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -83,21 +91,21 @@
             <!-- Set the first background image using inline CSS below. -->
             <div class="fill" style="background-image:url({% static 'Fifa/img/cover1.png' %});"></div>
             <div class="carousel-caption">
-                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Registrate!</a>
+                <a href="/fifa/register/" class="btn btn-success btn-lg">Registrate!</a>
             </div>
         </div>
         <div class="item">
             <!-- Set the second background image using inline CSS below. -->
             <div class="fill" style="background-image:url({% static 'Fifa/img/cover2.jpg' %});"></div>
             <div class="carousel-caption">
-                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Registrate!</a>
+                <a href="/fifa/register/" class="btn btn-success btn-lg">Registrate!</a>
             </div>
         </div>
         <div class="item">
             <!-- Set the third background image using inline CSS below. -->
             <div class="fill" style="background-image:url({% static 'Fifa/img/cover3.jpg' %});"></div>
             <div class="carousel-caption">
-                <a href="/fifa/register/" class="btn btn-outline btn-success btn-lg">Registrate!</a>
+                <a href="/fifa/register/" class="btn btn-success btn-lg">Registrate!</a>
             </div>
         </div>
     </div>
@@ -126,7 +134,13 @@
                     <label>Contraseña </label>
                     {{ form.password }}
                 </div>
-                <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" style="margin-top: 5px" type="submit">Entrar</button>
+                </div>
+                <div class="form-group text-center">
+                    <p>¿Aún no estas registrado?</p>
+                    <a href="{% url 'Fifa.views.register' %}" class="btn btn-primary">Registrate!</a>
+                </div>
 
             </form>
         </div>

@@ -228,8 +228,10 @@ def generate_match(league, matches_per_week, start_week, matches_between):
         players = league.players.all()
         # Created Position Table
         for player in players:
+            team = LeaguePlayer.objects.get(league=league, player=player)
             position = PositionTable(league=league,
-                                     player=player)
+                                     player=player,
+                                     team=team.team)
             position.save()
         # Created Matchs
         fix = Fixture(list(players), games=matches_between)

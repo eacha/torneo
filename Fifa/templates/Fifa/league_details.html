@@ -108,7 +108,7 @@
                             <th class="hidden-xs">PP</th>
                             <th class="hidden-xs">GF</th>
                             <th class="hidden-xs">GC</th>
-                            <th>Diff</th>
+                            <th>Dif</th>
                             <th>Puntos</th>
                         </tr>
                         </thead>
@@ -116,7 +116,7 @@
                         {% for player in position_table  %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ player.player }}</td>
+                                <td>{{ player.player }} ({{ player.team }})</td>
                                 <td>{{ player.played}}</td>
                                 <td class="hidden-xs">{{ player.wins}}</td>
                                 <td class="hidden-xs">{{ player.draws}}</td>
@@ -138,31 +138,34 @@
                     {% elif positions_page %}
                         <div id="partidos" class="tab-pane row fade collapse">
                     {% endif %}
-                        <h3>Partidos Fecha {{ fecha }}</h3>
-                        <hr/>
-                        {% if matches %}
-                            <table class="table table-hover table-striped table-condensed">
-                                <thead>
-                                <tr>
-                                    <th class="col-md-4">Local</th>
-                                    <th class="text-center col-md-2">Resultado</th>
-                                    <th class="col-md-4">Visita</th>
-                                </tr>
-                                </thead>
-                                <tbody id="matches-body">
-                                {% include 'Fifa/matches.html' %}
-                                </tbody>
-                            </table>
-                        {% endif %}
-                        <div>
-                            {% include 'Fifa/pagination.html' %}
-                        </div>
+                    <h3>Partidos Fecha {{ fecha }}</h3>
+                    <hr/>
+                    {% if matches %}
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                            <tr>
+                                <th class="col-md-4">Local</th>
+                                <th class="text-center col-md-2">Resultado</th>
+                                <th class="col-md-4">Visita</th>
+                            </tr>
+                            </thead>
+                            <tbody id="matches-body">
+                            {% include 'Fifa/matches.html' %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    <div>
+                        {% include 'Fifa/pagination.html' %}
+                    </div>
 
-                        <form class="form-inline hidden-xs" method="get" action="{% url 'Fifa.views.edit_league' league.id %}">
-                            <label  for="page">Ir a fecha:</label>
-                            <input class="form-control" type="number"name="page" style="width: 4em;">
-                            <button type="submit" class="btn btn-primary">Ir</button>
-                        </form>
+                    <form class="form-inline" method="get" action="{% url 'Fifa.views.edit_league' league.id %}">
+                        <div class="form-group">
+                            <label for="page">Ir a fecha:</label>
+                            <input class="form-control" type="number" name="page" id="page" style="width: 4em;">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ir</button>
+                    </form>
+
                     </div>
                     <!-- Administrar -->
                     {% if user.is_superuser %}
@@ -205,7 +208,7 @@
 
 
                     </div>
+                    </div>
                 </div>
             </div>
-        </div>
 {% endblock %}

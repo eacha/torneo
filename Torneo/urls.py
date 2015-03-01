@@ -7,7 +7,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'Torneo.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^$', 'Fifa.views.index'),
+    url(r'^$', 'Fifa.views.cover'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^fifa/', include('Fifa.urls')),
 )
