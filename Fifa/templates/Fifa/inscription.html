@@ -3,6 +3,18 @@
 
 {% block script %}
     <link href="{% static 'Fifa/css/tournament.css' %}" rel="stylesheet">
+    <script>
+        function check_teams(){
+            var t1 = $("#id_team1").val();
+            var t2 = $("#id_team2").val();
+            var t3 = $("#id_team3").val();
+            if (t1 == t2 || t2 == t3 || t1 == t3){
+                $("#inscription-fail").show();
+                return false;
+            }
+            return true;
+        }
+    </script>
 {% endblock %}
 
 {% block mobile %}
@@ -32,7 +44,11 @@
                     Tu inscripción se ha realizado con éxito. Puedes modificarla en cualquier momento.
                 </div>
             {% endif %}
-            <form action="" method="post">
+            <div id="inscription-fail" class="alert alert-danger" style="display: none">
+                Tu inscripción no se ha enviado. Debes elegir 3 equipos distintos.
+            </div>
+
+            <form action="" method="post" onsubmit="return check_teams()">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-4 col-md-4">

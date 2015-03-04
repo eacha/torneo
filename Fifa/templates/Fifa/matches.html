@@ -33,9 +33,9 @@
             {% endif %}
         {% endif %}
         {% if  match.local_score < match.visit_score %}
-            <td class="success">{{ match.visit }}</td>
+            <td class="success text-right">{{ match.visit }}</td>
         {% else %}
-            <td>{{ match.visit }}</td>
+            <td class="text-right">{{ match.visit }}</td>
         {% endif %}
     </tr>
 {% endfor %}

@@ -540,6 +540,10 @@ def league_details_matches(request, league_id):
 
 @login_required
 def league_details_positions(request, league_id):
+    page = request.GET.get("page", False)
+    if page:
+        return league_details_matches(request, league_id)
+
     data = league_details(request, league_id)
     data['positions_page'] = True
     c = RequestContext(request, data)

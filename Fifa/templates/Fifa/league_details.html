@@ -146,7 +146,7 @@
                             <tr>
                                 <th class="col-md-4">Local</th>
                                 <th class="text-center col-md-2">Resultado</th>
-                                <th class="col-md-4">Visita</th>
+                                <th class="col-md-4 text-right">Visita</th>
                             </tr>
                             </thead>
                             <tbody id="matches-body">
@@ -158,7 +158,7 @@
                         {% include 'Fifa/pagination.html' %}
                     </div>
 
-                    <form class="form-inline" method="get" action="{% url 'Fifa.views.edit_league' league.id %}">
+                    <form class="form-inline" method="get" action="{% url 'Fifa.views.league_details_matches' league.id %}">
                         <div class="form-group">
                             <label for="page">Ir a fecha:</label>
                             <input class="form-control" type="number" name="page" id="page" style="width: 4em;">
