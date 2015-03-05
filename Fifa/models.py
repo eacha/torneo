@@ -11,7 +11,7 @@ class Player(models.Model):
 
     def get_twitter(self):
         if self.twitter_account != "":
-            return self.twitter_account
+            return '@' + self.twitter_account
         return self.__unicode__()
 
 
