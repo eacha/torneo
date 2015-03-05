@@ -457,6 +457,10 @@ def index(request):
 @login_required
 def inscription(request, league_id):
     league = get_object_or_404(League, pk=league_id)
+    if not league.registration:
+        url = reverse('Fifa.views.index')
+        return HttpResponseRedirect(url)
+
     player = Player.objects.get(user=request.user)
     if request.POST:
         form = InscriptionForm(request.POST)
