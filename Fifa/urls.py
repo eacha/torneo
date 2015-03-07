@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, url
-from django.contrib.auth.views import password_reset
 from Fifa import views
 from Fifa.forms import ResetPasswordForm
 

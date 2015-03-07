@@ -124,6 +124,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'torneosdcc@gmail.com'
 
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
