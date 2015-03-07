@@ -24,10 +24,10 @@ DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.12', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.0.9', 'localhost', '127.0.0.1']
 
 ADMINS = (
-    ('Milenko Tomic', 'miletomc@gmail.com')
+    ('Milenko Tomic', 'miletomc@gmail.com'),
 )
 
 
@@ -146,22 +146,22 @@ LOGGING = {
         },
         'mail_admins': {
             'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
+            'class': 'django.utils.log.AdminEmailHandler'
         }
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['mail_admins', 'file'],
             'propagate': True,
             'level': 'DEBUG',
         },
         'django.request': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
+            'handlers': ['mail_admins', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
         'Torneo.custom': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['mail_admins', 'file'],
             'level': 'INFO',
         }
     }
