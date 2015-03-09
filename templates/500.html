@@ -1,14 +1,40 @@
-{% extends "Fifa/base2.html" %}
+<!DOCTYPE html>
+<html>
+<head lang="es">
 
-<!-- Header -->
-{% block title %} Torneos DCC {% endblock %}
-{% block content %}
-    <div class="content">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Bootstrap core Css -->
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+	<link href="/static/css/tournament.css" rel="stylesheet">
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <title>Torneos DCC</title>
+
+</head>
+<body>
+<!--  Fixed navbar  -->
+<div class="header">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/fifa/">Torneos DCC</a>
+			</div>
+		</div>
+	</nav>
+</div>
+<div class="content">
         <div class="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
             <h2>Ups... ha ocurrido un problema</h2>
             <p>Estamos intentando solucionar el problema</p>
-            <img src="url({% static 'Fifa/img/500.gif' %})" alt="kitten" class="img-rounded">
+            <img src="/static/Fifa/img/500.gif" alt="kitten" class="img-rounded">
         </div>
         <div class="col-md-4"></div>
     </div>
-{% endblock %}
+
+</body>
+</html>
