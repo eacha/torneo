@@ -314,7 +314,7 @@ def set_result(request, match_id):
         match.save()
 
         # Wins, Losses, Draws and Points
-        score_status =  match.league.name + " Fecha: " + str(match.round) \
+        score_status =  match.league.name + " Fecha " + str(match.round) + ":\n " \
                         + player1.player.get_twitter() + " " + str(local) + " - " + str(visit) + " " + player2.player.get_twitter()
         if local > visit:
             status = "(Ganador) "+ score_status
