@@ -131,8 +131,6 @@ class InscriptionForm(Form):
         if not valid:
             return valid
 
-        print "afasda"
-
         if self.cleaned_data['team1'] == self.cleaned_data['team2'] or \
            self.cleaned_data['team2'] == self.cleaned_data['team3'] or \
            self.cleaned_data['team1'] == self.cleaned_data['team3']:
