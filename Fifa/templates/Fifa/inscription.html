@@ -44,9 +44,11 @@
                     Tu inscripción se ha realizado con éxito. Puedes modificarla en cualquier momento.
                 </div>
             {% endif %}
-            <div id="inscription-fail" class="alert alert-danger" style="display: none">
+            {% if fail %}
+            <div id="inscription-fail" class="alert alert-danger">
                 Tu inscripción no se ha enviado. Debes elegir 3 equipos distintos.
             </div>
+            {% endif %}
 
             <form action="" method="post" onsubmit="return check_teams()">
                 {% csrf_token %}

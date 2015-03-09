@@ -124,3 +124,19 @@ class InscriptionForm(Form):
     team3 = forms.ModelChoiceField(queryset=Team.objects.all().order_by('name'),
                                    widget=forms.Select(attrs={'class': 'form-control'}),
                                    label='Equipo 3')
+
+    def is_valid(self):
+        valid = super(InscriptionForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        print "afasda"
+
+        if self.cleaned_data['team1'] == self.cleaned_data['team2'] or \
+           self.cleaned_data['team2'] == self.cleaned_data['team3'] or \
+           self.cleaned_data['team1'] == self.cleaned_data['team3']:
+            return False
+
+        return True
+

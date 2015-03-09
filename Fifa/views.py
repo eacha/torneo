@@ -314,7 +314,7 @@ def set_result(request, match_id):
         match.save()
 
         # Wins, Losses, Draws and Points
-        head_status =  match.league.name + " Fecha " + str(match.round) + ":\n"
+        head_status =  match.league.name + " Fecha " + str(match.round) + ":\n  "
         score_status = player1.player.get_twitter() + " " + str(local) + " - " + str(visit) + " " + player2.player.get_twitter()
         if local > visit:
             score_status = "(Ganador) "+ score_status
@@ -484,6 +484,16 @@ def inscription(request, league_id):
                     'league': league,
                     'form': form,
                     'ok': True
+            }
+            c = RequestContext(request, data)
+            return render_to_response('Fifa/inscription.html', c)
+
+        else:
+            leagues = League.objects.all()
+            data = {'leagues': leagues,
+                    'league': league,
+                    'form': form,
+                    'fail': True
             }
             c = RequestContext(request, data)
             return render_to_response('Fifa/inscription.html', c)
