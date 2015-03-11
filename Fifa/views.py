@@ -565,3 +565,10 @@ def league_details_positions(request, league_id):
     c = RequestContext(request, data)
     return render_to_response('Fifa/league_details.html', c)
 
+
+@staff_member_required
+def printable_matchs(request):
+    return False
+
+
+

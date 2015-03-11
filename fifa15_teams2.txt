@@ -1,0 +1,36 @@
+AS Monaco
+OGC Nice
+Bordeaux
+Olympique Lyon
+EA Guingamp
+PSG
+Evian Thonon FC
+RC Lens
+FC Lorient
+Saint-Etienne
+FC Metz
+SC Bastia
+FC Nantes
+SM Caen
+LOSC Lille
+Stade Reims
+Marseille
+Stade Rennais
+Montpellier HSC
+Toulouse FC
+Amkar Perm
+Kuban Krasnodar
+Arsenal Tula
+Lokomotiv
+CSKA Moskva
+Mordovia Saransk
+Dinamo Moskva
+Rubin Kazan
+FC Krasnodar
+Spartak Moskva
+FC Rostov
+Terek Grozny
+FC Ufa
+Torpedo Moskva
+FC Ural
+Zenit
