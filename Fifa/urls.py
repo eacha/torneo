@@ -5,9 +5,7 @@ from Fifa.forms import ResetPasswordForm
 urlpatterns = patterns('',
                        url(r'^login/', views.login_view, name='login'),
                        url(r'^logout/', views.logout_view, name='logout'),
-                       url(r'^register/', views.register, name='register'),
-
-                       url(r'^match/generate/(?P<league_id>\d+)/', views.generate_match, name='match_generate'),
+                       url(r'^register/', views.register, name='register'),                       
 
                        url(r'^match/result/(?P<match_id>\d+)/', views.set_result, name='set_match_result'),
 
@@ -30,7 +28,8 @@ urlpatterns = patterns('',
                            'django.contrib.auth.views.password_reset',
                            {'post_reset_redirect': '/fifa/user/password/reset/done/',
                             'template_name': 'Fifa/password_reset_form.html',
-                            'email_template_name': 'Fifa/password_reset_email.html'},
+                            'email_template_name': 'Fifa/password_reset_email.html',
+                            'subject_template_name': 'Fifa/password_reset_subject.txt'},
                            name="password_reset"),
 
                        url(r'^user/password/reset/done/$',
@@ -47,8 +46,6 @@ urlpatterns = patterns('',
                        url(r'^user/password/done/$',
                            'django.contrib.auth.views.password_reset_complete',
                            {'template_name': 'Fifa/password_reset_complete.html'}),
-
-
 
 
                        url(r'^$', views.cover, name='index'),
