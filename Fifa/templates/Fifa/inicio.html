@@ -22,7 +22,7 @@
     <div id="page-wrapper">
         <div class="panel-body col-lg-9">
             <div class="row">
-                <legend>Partidos de esta semana</legend>
+                <legend>Tus partidos de esta semana</legend>
                 {% for rival, score, result in matches_week %}
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="panel {{ result }}">
@@ -52,7 +52,7 @@
                 {% endfor %}
             </div>
             <div class="row">
-                <legend>Partidos pendientes</legend>
+                <legend>Tus partidos pendientes</legend>
                 {% for rival in late %}
                     <div class="col-lg-3 col-md-4 col-sm-6">
                         <div class="panel panel-realdanger">
