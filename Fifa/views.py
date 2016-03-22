@@ -215,7 +215,6 @@ def admin_weeks(request):
         if forms.is_valid():
             forms.save()
 
-
     forms = WeekFormSet()
     data = {'leagues': leagues,
             'forms': forms}

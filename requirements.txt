@@ -1,5 +1,4 @@
-Django==1.7.2
-django-bootstrap-pagination==1.5.1
-django-bootstrap3==5.0.3
-twitter==1.16.0
-wsgiref==0.1.2
+Django==1.9.4
+django-bootstrap-pagination==1.6.1
+django-bootstrap3==7.0.0
+twitter==1.17.1

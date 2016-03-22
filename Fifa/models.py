@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Player(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    twitter_account = models.CharField(max_length=15)
+    twitter_account = models.CharField(max_length=15, blank=True)
 
     def __unicode__(self):
         return self.user.first_name
