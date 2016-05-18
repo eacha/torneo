@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^$', 'Fifa.views.cover'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^fifa/', include('Fifa.urls')),
+    url(r'^api_fifa/', include('API_Fifa.urls'))
 )

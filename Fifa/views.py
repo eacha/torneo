@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.forms import formset_factory, modelformset_factory
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
@@ -390,7 +390,21 @@ def index(request):
     leagues = League.objects.all()
     player = Player.objects.get(user=request.user)
     date = datetime.today()
-    week = Week.objects.get(Q(start__lte=date) & Q(finish__gte=date))
+    try:
+        week = Week.objects.get(Q(start__lte=date) & Q(finish__gte=date))
+    except Week.DoesNotExist:
+        today = date.today()
+        idx = (today.weekday()+1)%7
+        mon = today - timedelta(idx-1)
+        sun = today + timedelta(7-idx)
+        number = Week.objects.all().aggregate(Max('number'))['number__max'] or 0
+        for i in range(52):
+            start = mon + timedelta(i*7)
+            finish = sun + timedelta(i*7)
+            number += 1
+            week = Week(number=number, start=start, finish=finish)
+            week.save()
+
 
     week_matches = Match.objects.filter((Q(visit=player) | Q(local=player))
                                         & Q(week=week)
